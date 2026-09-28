@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>MyBlaCa — Guide</title>
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#1F5F5B">
+<script>
+  // If this page was opened from an already-installed home-screen icon
+  // (an old shortcut that used to point straight at the app), send it
+  // straight to the app instead of showing the guide.
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+    window.location.replace('app.html');
+  }
+</script>
+<style>
+  :root{
+    --bg:#F6F4F0; --surface:#FFFFFF; --ink:#1C2624; --ink-soft:#5B6664;
+    --primary:#1F5F5B; --primary-dark:#14403D; --accent:#C97B3D; --danger:#B0413E;
+    --line:#E4DFD6; --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding-bottom:60px;}
+  header{background:var(--primary);color:#fff;padding:22px 16px 26px;border-radius:0 0 20px 20px;}
+  .headerTop{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:720px;margin:0 auto;}
+  header h1{margin:0;font-size:1.4rem;letter-spacing:-0.01em;}
+  header p{margin:6px 0 0;color:#CFE3E0;font-size:0.85rem;max-width:720px;margin-left:auto;margin-right:auto;}
+  select#langSwitch{width:auto;flex:0 0 auto;background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.35);border-radius:9px;padding:6px 10px;font-size:0.82rem;font-weight:600;}
+  select#langSwitch option{color:#1C2624;}
+  main{max-width:720px;margin:0 auto;padding:20px 16px;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px;}
+  .card h2{margin:0 0 10px;font-size:1.08rem;color:var(--primary-dark);}
+  .card p{margin:0 0 10px;font-size:0.92rem;}
+  .card p:last-child{margin-bottom:0;}
+  .heroCard{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;text-align:center;padding:26px 20px;}
+  .heroCard h2{color:#fff;font-size:1.2rem;}
+  .heroCard p{color:#DCEEEC;font-size:0.95rem;}
+  .btnRow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
+  .btn{display:inline-block;font-weight:700;font-size:0.92rem;padding:12px 20px;border-radius:11px;text-decoration:none;cursor:pointer;border:none;}
+  .btn-light{background:#fff;color:var(--primary-dark);}
+  .btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.6);}
+  .btn-primary{background:var(--primary);color:#fff;}
+  .platformTabs{display:flex;gap:6px;margin-bottom:16px;}
+  .platformTabs button{flex:1;background:#EFEAE1;color:var(--ink-soft);font-size:0.9rem;font-weight:700;padding:10px;border-radius:10px;border:none;cursor:pointer;}
+  .platformTabs button.active{background:var(--primary);color:#fff;}
+  .platformPanel{display:none;}
+  .platformPanel.active{display:block;}
+  .stepList{list-style:none;margin:0;padding:0;counter-reset:step;}
+  .stepList li{position:relative;padding:0 0 18px 40px;counter-increment:step;}
+  .stepList li:last-child{padding-bottom:0;}
+  .stepList li::before{content:counter(step);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-size:0.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .stepList strong{display:block;font-size:0.94rem;margin-bottom:2px;}
+  .stepList span{font-size:0.88rem;color:var(--ink-soft);}
+  .noteBox{background:#EFF6F5;border-radius:10px;padding:12px 14px;font-size:0.86rem;margin-top:14px;}
+  .noteBox b{color:var(--primary-dark);}
+  .faqItem{border-bottom:1px solid var(--line);padding:12px 0;}
+  .faqItem:last-child{border-bottom:none;padding-bottom:0;}
+  .faqItem summary{font-weight:700;font-size:0.92rem;cursor:pointer;color:var(--primary-dark);}
+  .faqItem p{margin-top:8px;}
+  .footer-note{text-align:center;font-size:0.78rem;color:var(--ink-soft);padding:14px 20px 0;}
+  @media (max-width:420px){
+    .btn{width:100%;text-align:center;}
+    .btnRow{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="headerTop">
+    <div>
+      <h1 data-i18n="guideTitle">MyBlaCa — Guide</h1>
+    </div>
+    <select id="langSwitch" class="no-print" onchange="setLang(this.value)">
+      <option value="en">EN</option><option value="de">DE</option><option value="fr">FR</option>
+      <option value="es">ES</option><option value="sv">SV</option><option value="pl">PL</option>
+    </select>
+  </div>
+  <p data-i18n="guideSubtitle">A personal notebook for urothelial cancer follow-up, stored only on your own phone.</p>
+</header>
+
+<main>
+
+  <div class="card heroCard">
+    <h2 data-i18n="tryTitle">See it before you install it</h2>
+    <p data-i18n="tryDesc">Open a working copy of the app filled with a sample patient's history — tap around freely, nothing you do there is kept.</p>
+    <div class="btnRow">
+      <a class="btn btn-light" href="demo.html" data-i18n="tryButton">▶ Try the interactive demo</a>
+      <a class="btn btn-outline" href="app.html" data-i18n="openAppButton">Open the real app</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="whatTitle">What this app does</h2>
+    <p data-i18n="whatP1">MyBlaCa is a dedicated notebook for patients with urothelial carcinoma — a place to keep track of your diagnosis, cystoscopies, surgeries and bladder instillations between hospital visits.</p>
+    <p data-i18n="whatP2">It is not a tool for making treatment decisions. It does not replace your urologist — it simply helps you keep the facts straight for yourself and for your appointments.</p>
+    <p data-i18n="whatP3"><b data-i18n="whatP3b">Everything stays on your device.</b> <span data-i18n="whatP3rest">There is no account, no login, and no cloud server — your data never leaves your phone unless you choose to export a backup file yourself.</span></p>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="installTitle">Install it on your phone</h2>
+    <p data-i18n="installIntro">MyBlaCa installs like a regular app — with its own icon on your home screen — straight from your browser, in under a minute. No app store, no account.</p>
+    <div class="platformTabs">
+      <button id="tabAndroid" class="active" onclick="setPlatform('android')" data-i18n="androidTab">Android</button>
+      <button id="tabIos" onclick="setPlatform('ios')" data-i18n="iosTab">iPhone / iPad</button>
+    </div>
+
+    <div id="panelAndroid" class="platformPanel active">
+      <ol class="stepList">
+        <li><strong data-i18n="and1t">Open the app link in Chrome</strong><span data-i18n="and1d">Use the Chrome browser on your phone (not another browser) and open the MyBlaCa link your clinic or family member gave you.</span></li>
+        <li><strong data-i18n="and2t">Open the menu</strong><span data-i18n="and2d">Tap the three dots (⋮) in the top-right corner of Chrome.</span></li>
+        <li><strong data-i18n="and3t">Tap "Add to Home screen" or "Install app"</strong><span data-i18n="and3d">Chrome may show this automatically as a banner at the bottom of the screen — you can tap that instead.</span></li>
+        <li><strong data-i18n="and4t">Confirm</strong><span data-i18n="and4d">Tap "Add" or "Install". The MyBlaCa icon now appears on your home screen like any other app.</span></li>
+        <li><strong data-i18n="and5t">Open it from the icon</strong><span data-i18n="and5d">From now on, always open MyBlaCa from its home screen icon — it works offline and keeps your data safely between visits.</span></li>
+      </ol>
+    </div>
+
+    <div id="panelIos" class="platformPanel">
+      <ol class="stepList">
+        <li><strong data-i18n="ios1t">Open the app link in Safari</strong><span data-i18n="ios1d">This only works in Safari — not Chrome or another browser on iPhone. Open the MyBlaCa link your clinic or family member gave you.</span></li>
+        <li><strong data-i18n="ios2t">Tap the Share button</strong><span data-i18n="ios2d">It's the square icon with an arrow pointing up, in the bottom toolbar (or top, on iPad).</span></li>
+        <li><strong data-i18n="ios3t">Tap "Add to Home Screen"</strong><span data-i18n="ios3d">Scroll down the share menu if you don't see it right away.</span></li>
+        <li><strong data-i18n="ios4t">Tap "Add"</strong><span data-i18n="ios4d">The MyBlaCa icon now appears on your home screen like any other app.</span></li>
+        <li><strong data-i18n="ios5t">Open it from the icon</strong><span data-i18n="ios5d">From now on, always open MyBlaCa from its home screen icon — it works offline and keeps your data safely between visits.</span></li>
+      </ol>
+    </div>
+
+    <div class="noteBox">
+      <b data-i18n="noteTitle">Why it has to be added this way:</b> <span data-i18n="noteBody">MyBlaCa isn't in the App Store or Google Play — it runs directly from the web, so "Add to Home Screen" is what turns it into an app icon on your phone. This also means there is nothing to buy, no account to register, and no company holding your medical data.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="useTitle">Using the app day to day</h2>
+    <ol class="stepList">
+      <li><strong data-i18n="use1t">Fill in Primary data once</strong><span data-i18n="use1d">Your diagnosis details, from your pathology report or your doctor. You can always come back and edit it.</span></li>
+      <li><strong data-i18n="use2t">Add an event after each visit</strong><span data-i18n="use2d">A cystoscopy, a urine test, an instillation, or a surgery — takes under a minute to log.</span></li>
+      <li><strong data-i18n="use3t">Check History and Current status anytime</strong><span data-i18n="use3d">See your full timeline, filter by type, and view your recommended follow-up schedule.</span></li>
+      <li><strong data-i18n="use4t">Back up occasionally</strong><span data-i18n="use4d">From the About screen, export a backup file — especially before you change phones — and import it on your new device to carry your history over.</span></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="faqTitle">Common questions</h2>
+    <details class="faqItem" open>
+      <summary data-i18n="faq1q">Is my data sent anywhere?</summary>
+      <p data-i18n="faq1a">No. Everything you enter is stored only in your phone's browser storage. There is no server, no account and no cloud sync of any kind.</p>
+    </details>
+    <details class="faqItem">
+      <summary data-i18n="faq2q">What happens if I get a new phone?</summary>
+      <p data-i18n="faq2a">Export a backup file from the About screen on your old phone (e.g. by emailing it to yourself or saving it to cloud storage you use), install MyBlaCa on the new phone, and import that file from its About screen.</p>
+    </details>
+    <details class="faqItem">
+      <summary data-i18n="faq3q">Can I print my records for an appointment?</summary>
+      <p data-i18n="faq3a">Yes — open Current status and use the print/save-as-PDF button, or print the History table.</p>
+    </details>
+    <details class="faqItem">
+      <summary data-i18n="faq4q">Does this replace talking to my doctor?</summary>
+      <p data-i18n="faq4a">No. MyBlaCa is a personal notebook, not a diagnostic or decision-making tool. Always discuss your results and follow-up plan with your urologist.</p>
+    </details>
+  </div>
+
+  <div class="btnRow" style="margin-top:4px">
+    <a class="btn btn-primary" href="app.html" data-i18n="openAppButton2">Open MyBlaCa</a>
+  </div>
+
+</main>
+<p class="footer-note" data-i18n="footerNote">This app does not connect to the internet or send any data — everything stays on your device.</p>
+
+<script>
+const I18N = {};
+
+I18N.en = {
+guideTitle:"MyBlaCa — Guide", guideSubtitle:"A personal notebook for urothelial cancer follow-up, stored only on your own phone.",
+tryTitle:"See it before you install it", tryDesc:"Open a working copy of the app filled with a sample patient's history — tap around freely, nothing you do there is kept.",
+tryButton:"▶ Try the interactive demo", openAppButton:"Open the real app", openAppButton2:"Open MyBlaCa",
+whatTitle:"What this app does",
+whatP1:"MyBlaCa is a dedicated notebook for patients with urothelial carcinoma — a place to keep track of your diagnosis, cystoscopies, surgeries and bladder instillations between hospital visits.",
+whatP2:"It is not a tool for making treatment decisions. It does not replace your urologist — it simply helps you keep the facts straight for yourself and for your appointments.",
+whatP3b:"Everything stays on your device.", whatP3rest:"There is no account, no login, and no cloud server — your data never leaves your phone unless you choose to export a backup file yourself.",
+installTitle:"Install it on your phone", installIntro:"MyBlaCa installs like a regular app — with its own icon on your home screen — straight from your browser, in under a minute. No app store, no account.",
+androidTab:"Android", iosTab:"iPhone / iPad",
+and1t:"Open the app link in Chrome", and1d:"Use the Chrome browser on your phone (not another browser) and open the MyBlaCa link your clinic or family member gave you.",
+and2t:"Open the menu", and2d:"Tap the three dots (⋮) in the top-right corner of Chrome.",
+and3t:"Tap \"Add to Home screen\" or \"Install app\"", and3d:"Chrome may show this automatically as a banner at the bottom of the screen — you can tap that instead.",
+and4t:"Confirm", and4d:"Tap \"Add\" or \"Install\". The MyBlaCa icon now appears on your home screen like any other app.",
+and5t:"Open it from the icon", and5d:"From now on, always open MyBlaCa from its home screen icon — it works offline and keeps your data safely between visits.",
+ios1t:"Open the app link in Safari", ios1d:"This only works in Safari — not Chrome or another browser on iPhone. Open the MyBlaCa link your clinic or family member gave you.",
+ios2t:"Tap the Share button", ios2d:"It's the square icon with an arrow pointing up, in the bottom toolbar (or top, on iPad).",
+ios3t:"Tap \"Add to Home Screen\"", ios3d:"Scroll down the share menu if you don't see it right away.",
+ios4t:"Tap \"Add\"", ios4d:"The MyBlaCa icon now appears on your home screen like any other app.",
+ios5t:"Open it from the icon", ios5d:"From now on, always open MyBlaCa from its home screen icon — it works offline and keeps your data safely between visits.",
+noteTitle:"Why it has to be added this way:", noteBody:"MyBlaCa isn't in the App Store or Google Play — it runs directly from the web, so \"Add to Home Screen\" is what turns it into an app icon on your phone. This also means there is nothing to buy, no account to register, and no company holding your medical data.",
+useTitle:"Using the app day to day",
+use1t:"Fill in Primary data once", use1d:"Your diagnosis details, from your pathology report or your doctor. You can always come back and edit it.",
+use2t:"Add an event after each visit", use2d:"A cystoscopy, a urine test, an instillation, or a surgery — takes under a minute to log.",
+use3t:"Check History and Current status anytime", use3d:"See your full timeline, filter by type, and view your recommended follow-up schedule.",
+use4t:"Back up occasionally", use4d:"From the About screen, export a backup file — especially before you change phones — and import it on your new device to carry your history over.",
+faqTitle:"Common questions",
+faq1q:"Is my data sent anywhere?", faq1a:"No. Everything you enter is stored only in your phone's browser storage. There is no server, no account and no cloud sync of any kind.",
+faq2q:"What happens if I get a new phone?", faq2a:"Export a backup file from the About screen on your old phone (e.g. by emailing it to yourself or saving it to cloud storage you use), install MyBlaCa on the new phone, and import that file from its About screen.",
+faq3q:"Can I print my records for an appointment?", faq3a:"Yes — open Current status and use the print/save-as-PDF button, or print the History table.",
+faq4q:"Does this replace talking to my doctor?", faq4a:"No. MyBlaCa is a personal notebook, not a diagnostic or decision-making tool. Always discuss your results and follow-up plan with your urologist.",
+footerNote:"This app does not connect to the internet or send any data — everything stays on your device."
+};
+
+I18N.de = Object.assign({}, I18N.en, {
+guideTitle:"MyBlaCa — Anleitung", guideSubtitle:"Ein persönliches Tagebuch zur Nachsorge bei Urothelkarzinom, nur auf Ihrem eigenen Telefon gespeichert.",
+tryTitle:"Erst ansehen, dann installieren", tryDesc:"Öffnen Sie eine funktionierende Version der App mit der Beispielhistorie eines Patienten — probieren Sie alles aus, nichts davon wird gespeichert.",
+tryButton:"▶ Interaktive Demo ausprobieren", openAppButton:"Echte App öffnen", openAppButton2:"MyBlaCa öffnen",
+whatTitle:"Was diese App macht",
+whatP1:"MyBlaCa ist ein dediziertes Tagebuch für Patienten mit Urothelkarzinom — ein Ort, um zwischen den Arztbesuchen Diagnose, Zystoskopien, Operationen und Blaseninstillationen im Blick zu behalten.",
+whatP2:"Es ist kein Werkzeug für Behandlungsentscheidungen. Es ersetzt nicht Ihren Urologen — es hilft Ihnen lediglich, für sich selbst und für Ihre Termine den Überblick zu behalten.",
+whatP3b:"Alle Daten bleiben auf Ihrem Gerät.", whatP3rest:"Es gibt kein Konto, keinen Login und keinen Cloud-Server — Ihre Daten verlassen Ihr Telefon nie, außer Sie exportieren selbst eine Sicherungsdatei.",
+installTitle:"Auf dem Telefon installieren", installIntro:"MyBlaCa installiert sich wie eine normale App — mit eigenem Symbol auf dem Startbildschirm — direkt aus dem Browser, in unter einer Minute. Kein App Store, kein Konto.",
+androidTab:"Android", iosTab:"iPhone / iPad",
+and1t:"App-Link in Chrome öffnen", and1d:"Verwenden Sie auf Ihrem Telefon den Chrome-Browser (nicht einen anderen) und öffnen Sie den MyBlaCa-Link, den Ihnen Ihre Klinik oder ein Familienmitglied gegeben hat.",
+and2t:"Menü öffnen", and2d:"Tippen Sie oben rechts in Chrome auf die drei Punkte (⋮).",
+and3t:"„Zum Startbildschirm hinzufügen“ oder „App installieren“ antippen", and3d:"Chrome zeigt dies manchmal automatisch als Banner am unteren Bildschirmrand an — Sie können auch darauf tippen.",
+and4t:"Bestätigen", and4d:"Tippen Sie auf „Hinzufügen“ oder „Installieren“. Das MyBlaCa-Symbol erscheint nun wie jede andere App auf Ihrem Startbildschirm.",
+and5t:"Über das Symbol öffnen", and5d:"Öffnen Sie MyBlaCa ab jetzt immer über das Symbol auf dem Startbildschirm — es funktioniert offline und bewahrt Ihre Daten sicher zwischen den Terminen.",
+ios1t:"App-Link in Safari öffnen", ios1d:"Dies funktioniert nur in Safari — nicht in Chrome oder einem anderen Browser auf dem iPhone. Öffnen Sie den MyBlaCa-Link, den Ihnen Ihre Klinik oder ein Familienmitglied gegeben hat.",
+ios2t:"Teilen-Symbol antippen", ios2d:"Das ist das quadratische Symbol mit dem Pfeil nach oben, in der unteren Symbolleiste (beim iPad oben).",
+ios3t:"„Zum Home-Bildschirm“ antippen", ios3d:"Scrollen Sie im Teilen-Menü nach unten, falls Sie es nicht sofort sehen.",
+ios4t:"„Hinzufügen“ antippen", ios4d:"Das MyBlaCa-Symbol erscheint nun wie jede andere App auf Ihrem Startbildschirm.",
+ios5t:"Über das Symbol öffnen", ios5d:"Öffnen Sie MyBlaCa ab jetzt immer über das Symbol auf dem Startbildschirm — es funktioniert offline und bewahrt Ihre Daten sicher zwischen den Terminen.",
+noteTitle:"Warum es so hinzugefügt werden muss:", noteBody:"MyBlaCa ist nicht im App Store oder bei Google Play — es läuft direkt aus dem Web, daher macht „Zum Startbildschirm hinzufügen“ daraus ein App-Symbol auf Ihrem Telefon. Das bedeutet auch: nichts zu kaufen, kein Konto zu registrieren und kein Unternehmen, das Ihre medizinischen Daten verwaltet.",
+useTitle:"Die App im Alltag nutzen",
+use1t:"Basisdaten einmalig ausfüllen", use1d:"Ihre Diagnosedaten, aus dem Pathologiebericht oder von Ihrem Arzt. Sie können jederzeit zurückkehren und sie bearbeiten.",
+use2t:"Nach jedem Termin einen Eintrag hinzufügen", use2d:"Eine Zystoskopie, ein Urintest, eine Instillation oder eine Operation — in unter einer Minute erfasst.",
+use3t:"Verlauf und aktuellen Status jederzeit einsehen", use3d:"Sehen Sie Ihren vollständigen Zeitverlauf, filtern Sie nach Art und sehen Sie Ihren empfohlenen Nachsorgeplan.",
+use4t:"Gelegentlich sichern", use4d:"Exportieren Sie im Info-Bildschirm eine Sicherungsdatei — besonders vor einem Telefonwechsel — und importieren Sie sie auf dem neuen Gerät, um Ihre Historie zu übertragen.",
+faqTitle:"Häufige Fragen",
+faq1q:"Werden meine Daten irgendwohin gesendet?", faq1a:"Nein. Alles, was Sie eingeben, wird nur im Browserspeicher Ihres Telefons gespeichert. Es gibt keinen Server, kein Konto und keine Cloud-Synchronisierung jeglicher Art.",
+faq2q:"Was passiert, wenn ich ein neues Telefon bekomme?", faq2a:"Exportieren Sie auf dem alten Telefon im Info-Bildschirm eine Sicherungsdatei (z. B. per E-Mail an sich selbst oder in einem genutzten Cloud-Speicher), installieren Sie MyBlaCa auf dem neuen Telefon und importieren Sie die Datei dort im Info-Bildschirm.",
+faq3q:"Kann ich meine Daten für einen Termin ausdrucken?", faq3a:"Ja — öffnen Sie „Aktueller Status“ und nutzen Sie die Druck-/Als-PDF-speichern-Schaltfläche, oder drucken Sie die Verlaufstabelle.",
+faq4q:"Ersetzt das das Gespräch mit meinem Arzt?", faq4a:"Nein. MyBlaCa ist ein persönliches Tagebuch, kein Diagnose- oder Entscheidungswerkzeug. Besprechen Sie Ergebnisse und Nachsorgeplan stets mit Ihrem Urologen.",
+footerNote:"Diese App verbindet sich nicht mit dem Internet und sendet keine Daten — alles bleibt auf Ihrem Gerät."
+});
+
+I18N.fr = Object.assign({}, I18N.en, {
+guideTitle:"MyBlaCa — Guide", guideSubtitle:"Un carnet personnel de suivi du carcinome urothélial, stocké uniquement sur votre propre téléphone.",
+tryTitle:"Découvrez avant d'installer", tryDesc:"Ouvrez une copie fonctionnelle de l'application remplie de l'historique d'un patient fictif — explorez librement, rien de ce que vous y faites n'est conservé.",
+tryButton:"▶ Essayer la démo interactive", openAppButton:"Ouvrir l'application réelle", openAppButton2:"Ouvrir MyBlaCa",
+whatTitle:"Ce que fait cette application",
+whatP1:"MyBlaCa est un carnet dédié aux patients atteints de carcinome urothélial — un endroit pour suivre votre diagnostic, vos cystoscopies, vos interventions et vos instillations vésicales entre les visites à l'hôpital.",
+whatP2:"Ce n'est pas un outil d'aide à la décision thérapeutique. Il ne remplace pas votre urologue — il vous aide simplement à garder une vue claire des faits pour vous-même et pour vos rendez-vous.",
+whatP3b:"Tout reste sur votre appareil.", whatP3rest:"Il n'y a ni compte, ni connexion, ni serveur cloud — vos données ne quittent jamais votre téléphone, sauf si vous choisissez vous-même d'exporter un fichier de sauvegarde.",
+installTitle:"Installez-la sur votre téléphone", installIntro:"MyBlaCa s'installe comme une application classique — avec sa propre icône sur votre écran d'accueil — directement depuis votre navigateur, en moins d'une minute. Sans magasin d'applications, sans compte.",
+androidTab:"Android", iosTab:"iPhone / iPad",
+and1t:"Ouvrez le lien dans Chrome", and1d:"Utilisez le navigateur Chrome sur votre téléphone (pas un autre) et ouvrez le lien MyBlaCa fourni par votre clinique ou un proche.",
+and2t:"Ouvrez le menu", and2d:"Appuyez sur les trois points (⋮) en haut à droite de Chrome.",
+and3t:"Appuyez sur « Ajouter à l'écran d'accueil » ou « Installer l'application »", and3d:"Chrome peut afficher cela automatiquement sous forme de bandeau en bas de l'écran — vous pouvez aussi appuyer dessus.",
+and4t:"Confirmez", and4d:"Appuyez sur « Ajouter » ou « Installer ». L'icône MyBlaCa apparaît alors sur votre écran d'accueil comme n'importe quelle autre application.",
+and5t:"Ouvrez-la depuis l'icône", and5d:"Désormais, ouvrez toujours MyBlaCa depuis son icône sur l'écran d'accueil — elle fonctionne hors ligne et conserve vos données en toute sécurité entre les visites.",
+ios1t:"Ouvrez le lien dans Safari", ios1d:"Cela ne fonctionne que dans Safari — pas dans Chrome ou un autre navigateur sur iPhone. Ouvrez le lien MyBlaCa fourni par votre clinique ou un proche.",
+ios2t:"Appuyez sur le bouton Partager", ios2d:"C'est l'icône carrée avec une flèche vers le haut, dans la barre d'outils du bas (ou du haut, sur iPad).",
+ios3t:"Appuyez sur « Sur l'écran d'accueil »", ios3d:"Faites défiler le menu de partage vers le bas si vous ne le voyez pas immédiatement.",
+ios4t:"Appuyez sur « Ajouter »", ios4d:"L'icône MyBlaCa apparaît alors sur votre écran d'accueil comme n'importe quelle autre application.",
+ios5t:"Ouvrez-la depuis l'icône", ios5d:"Désormais, ouvrez toujours MyBlaCa depuis son icône sur l'écran d'accueil — elle fonctionne hors ligne et conserve vos données en toute sécurité entre les visites.",
+noteTitle:"Pourquoi il faut l'ajouter ainsi :", noteBody:"MyBlaCa n'est pas sur l'App Store ni sur Google Play — elle fonctionne directement depuis le web, donc « Ajouter à l'écran d'accueil » est ce qui la transforme en icône d'application sur votre téléphone. Cela signifie aussi qu'il n'y a rien à acheter, aucun compte à créer, et aucune société ne détient vos données médicales.",
+useTitle:"Utiliser l'application au quotidien",
+use1t:"Renseignez les données initiales une fois", use1d:"Les détails de votre diagnostic, tirés de votre compte-rendu anatomopathologique ou donnés par votre médecin. Vous pouvez toujours revenir les modifier.",
+use2t:"Ajoutez un événement après chaque visite", use2d:"Une cystoscopie, une analyse d'urine, une instillation ou une intervention — moins d'une minute pour l'enregistrer.",
+use3t:"Consultez l'historique et le statut actuel à tout moment", use3d:"Visualisez votre chronologie complète, filtrez par type, et consultez votre calendrier de suivi recommandé.",
+use4t:"Sauvegardez de temps en temps", use4d:"Depuis l'écran « À propos », exportez un fichier de sauvegarde — surtout avant de changer de téléphone — et importez-le sur votre nouvel appareil pour transférer votre historique.",
+faqTitle:"Questions fréquentes",
+faq1q:"Mes données sont-elles envoyées quelque part ?", faq1a:"Non. Tout ce que vous saisissez est stocké uniquement dans le stockage du navigateur de votre téléphone. Il n'y a ni serveur, ni compte, ni synchronisation cloud d'aucune sorte.",
+faq2q:"Que se passe-t-il si je change de téléphone ?", faq2a:"Exportez un fichier de sauvegarde depuis l'écran « À propos » de votre ancien téléphone (par exemple en vous l'envoyant par e-mail ou en le stockant dans un espace cloud que vous utilisez), installez MyBlaCa sur le nouveau téléphone, puis importez ce fichier depuis son écran « À propos ».",
+faq3q:"Puis-je imprimer mes données pour un rendez-vous ?", faq3a:"Oui — ouvrez « Statut actuel » et utilisez le bouton imprimer/enregistrer en PDF, ou imprimez le tableau de l'historique.",
+faq4q:"Cela remplace-t-il les échanges avec mon médecin ?", faq4a:"Non. MyBlaCa est un carnet personnel, pas un outil de diagnostic ou de décision. Discutez toujours de vos résultats et de votre suivi avec votre urologue.",
+footerNote:"Cette application ne se connecte pas à internet et n'envoie aucune donnée — tout reste sur votre appareil."
+});
+
+I18N.es = Object.assign({}, I18N.en, {
+guideTitle:"MyBlaCa — Guía", guideSubtitle:"Un cuaderno personal de seguimiento del carcinoma urotelial, almacenado solo en su propio teléfono.",
+tryTitle:"Véalo antes de instalarlo", tryDesc:"Abra una copia funcional de la aplicación con el historial de un paciente de ejemplo — explore libremente, nada de lo que haga ahí se conserva.",
+tryButton:"▶ Probar la demo interactiva", openAppButton:"Abrir la aplicación real", openAppButton2:"Abrir MyBlaCa",
+whatTitle:"Qué hace esta aplicación",
+whatP1:"MyBlaCa es un cuaderno dedicado a pacientes con carcinoma urotelial — un lugar para llevar el control de su diagnóstico, cistoscopias, cirugías e instilaciones vesicales entre visitas al hospital.",
+whatP2:"No es una herramienta para tomar decisiones de tratamiento. No sustituye a su urólogo — simplemente le ayuda a tener claros los hechos, tanto para usted como para sus citas.",
+whatP3b:"Todo permanece en su dispositivo.", whatP3rest:"No hay cuenta, ni inicio de sesión, ni servidor en la nube — sus datos nunca salen de su teléfono a menos que usted mismo decida exportar un archivo de copia de seguridad.",
+installTitle:"Instálela en su teléfono", installIntro:"MyBlaCa se instala como una aplicación normal — con su propio icono en la pantalla de inicio — directamente desde su navegador, en menos de un minuto. Sin tienda de aplicaciones, sin cuenta.",
+androidTab:"Android", iosTab:"iPhone / iPad",
+and1t:"Abra el enlace en Chrome", and1d:"Use el navegador Chrome de su teléfono (no otro) y abra el enlace de MyBlaCa que le dio su clínica o un familiar.",
+and2t:"Abra el menú", and2d:"Toque los tres puntos (⋮) en la esquina superior derecha de Chrome.",
+and3t:"Toque \"Añadir a pantalla de inicio\" o \"Instalar aplicación\"", and3d:"Chrome puede mostrarlo automáticamente como un aviso en la parte inferior de la pantalla — también puede tocar ahí.",
+and4t:"Confirme", and4d:"Toque \"Añadir\" o \"Instalar\". El icono de MyBlaCa aparecerá en su pantalla de inicio como cualquier otra aplicación.",
+and5t:"Ábrala desde el icono", and5d:"A partir de ahora, abra siempre MyBlaCa desde su icono en la pantalla de inicio — funciona sin conexión y guarda sus datos de forma segura entre visitas.",
+ios1t:"Abra el enlace en Safari", ios1d:"Esto solo funciona en Safari, no en Chrome ni otro navegador en iPhone. Abra el enlace de MyBlaCa que le dio su clínica o un familiar.",
+ios2t:"Toque el botón Compartir", ios2d:"Es el icono cuadrado con una flecha hacia arriba, en la barra inferior (o superior, en iPad).",
+ios3t:"Toque \"Añadir a pantalla de inicio\"", ios3d:"Desplácese hacia abajo en el menú de compartir si no lo ve de inmediato.",
+ios4t:"Toque \"Añadir\"", ios4d:"El icono de MyBlaCa aparecerá en su pantalla de inicio como cualquier otra aplicación.",
+ios5t:"Ábrala desde el icono", ios5d:"A partir de ahora, abra siempre MyBlaCa desde su icono en la pantalla de inicio — funciona sin conexión y guarda sus datos de forma segura entre visitas.",
+noteTitle:"Por qué hay que añadirla así:", noteBody:"MyBlaCa no está en la App Store ni en Google Play — funciona directamente desde la web, así que \"Añadir a pantalla de inicio\" es lo que la convierte en un icono de aplicación en su teléfono. Esto también significa que no hay nada que comprar, ninguna cuenta que registrar y ninguna empresa que guarde sus datos médicos.",
+useTitle:"Usar la aplicación en el día a día",
+use1t:"Rellene los datos iniciales una vez", use1d:"Los detalles de su diagnóstico, de su informe de patología o de su médico. Siempre puede volver y editarlos.",
+use2t:"Añada un evento después de cada visita", use2d:"Una cistoscopia, un análisis de orina, una instilación o una cirugía — se registra en menos de un minuto.",
+use3t:"Consulte el historial y el estado actual en cualquier momento", use3d:"Vea su cronología completa, filtre por tipo y consulte su calendario de seguimiento recomendado.",
+use4t:"Haga copias de seguridad de vez en cuando", use4d:"Desde la pantalla \"Acerca de\", exporte un archivo de copia de seguridad — especialmente antes de cambiar de teléfono — e impórtelo en el nuevo dispositivo para trasladar su historial.",
+faqTitle:"Preguntas frecuentes",
+faq1q:"¿Se envían mis datos a algún sitio?", faq1a:"No. Todo lo que introduce se almacena solo en el almacenamiento del navegador de su teléfono. No hay servidor, ni cuenta, ni sincronización en la nube de ningún tipo.",
+faq2q:"¿Qué pasa si consigo un teléfono nuevo?", faq2a:"Exporte un archivo de copia de seguridad desde la pantalla \"Acerca de\" en su teléfono antiguo (por ejemplo, enviándoselo por correo o guardándolo en un almacenamiento en la nube que use), instale MyBlaCa en el nuevo teléfono e importe ese archivo desde su pantalla \"Acerca de\".",
+faq3q:"¿Puedo imprimir mis datos para una cita?", faq3a:"Sí — abra \"Estado actual\" y use el botón de imprimir/guardar como PDF, o imprima la tabla del historial.",
+faq4q:"¿Esto sustituye hablar con mi médico?", faq4a:"No. MyBlaCa es un cuaderno personal, no una herramienta de diagnóstico ni de decisión. Comente siempre sus resultados y su plan de seguimiento con su urólogo.",
+footerNote:"Esta aplicación no se conecta a internet ni envía ningún dato — todo permanece en su dispositivo."
+});
+
+I18N.sv = Object.assign({}, I18N.en, {
+guideTitle:"MyBlaCa — Guide", guideSubtitle:"En personlig dagbok för uppföljning av urotelial cancer, sparad enbart på din egen telefon.",
+tryTitle:"Se den innan du installerar", tryDesc:"Öppna en fungerande kopia av appen fylld med en exempelpatients historik — testa fritt, inget du gör där sparas.",
+tryButton:"▶ Prova den interaktiva demot", openAppButton:"Öppna den riktiga appen", openAppButton2:"Öppna MyBlaCa",
+whatTitle:"Vad appen gör",
+whatP1:"MyBlaCa är en dedikerad dagbok för patienter med urotelial cancer — en plats att hålla koll på din diagnos, cystoskopier, operationer och blåsinstillationer mellan sjukhusbesöken.",
+whatP2:"Det är inget verktyg för att fatta behandlingsbeslut. Det ersätter inte din urolog — det hjälper dig bara att hålla ordning på fakta för dig själv och inför dina besök.",
+whatP3b:"Allt stannar på din enhet.", whatP3rest:"Det finns inget konto, ingen inloggning och ingen molnserver — dina uppgifter lämnar aldrig din telefon om du inte själv väljer att exportera en säkerhetskopia.",
+installTitle:"Installera på din telefon", installIntro:"MyBlaCa installeras som en vanlig app — med egen ikon på hemskärmen — direkt från din webbläsare, på under en minut. Ingen app store, inget konto.",
+androidTab:"Android", iosTab:"iPhone / iPad",
+and1t:"Öppna applänken i Chrome", and1d:"Använd Chrome-webbläsaren på din telefon (inte en annan webbläsare) och öppna MyBlaCa-länken som din klinik eller familjemedlem gav dig.",
+and2t:"Öppna menyn", and2d:"Tryck på de tre punkterna (⋮) uppe till höger i Chrome.",
+and3t:"Tryck på \"Lägg till på startskärmen\" eller \"Installera app\"", and3d:"Chrome kan visa detta automatiskt som en banner längst ner på skärmen — du kan trycka på den istället.",
+and4t:"Bekräfta", and4d:"Tryck på \"Lägg till\" eller \"Installera\". MyBlaCa-ikonen visas nu på din hemskärm precis som vilken annan app som helst.",
+and5t:"Öppna den från ikonen", and5d:"Öppna från och med nu alltid MyBlaCa från ikonen på hemskärmen — den fungerar offline och håller dina uppgifter säkra mellan besöken.",
+ios1t:"Öppna applänken i Safari", ios1d:"Detta fungerar bara i Safari — inte Chrome eller en annan webbläsare på iPhone. Öppna MyBlaCa-länken som din klinik eller familjemedlem gav dig.",
+ios2t:"Tryck på Dela-knappen", ios2d:"Det är den fyrkantiga ikonen med en pil uppåt, i verktygsfältet längst ner (eller överst, på iPad).",
+ios3t:"Tryck på \"Lägg till på hemskärmen\"", ios3d:"Bläddra ner i delningsmenyn om du inte ser den direkt.",
+ios4t:"Tryck på \"Lägg till\"", ios4d:"MyBlaCa-ikonen visas nu på din hemskärm precis som vilken annan app som helst.",
+ios5t:"Öppna den från ikonen", ios5d:"Öppna från och med nu alltid MyBlaCa från ikonen på hemskärmen — den fungerar offline och håller dina uppgifter säkra mellan besöken.",
+noteTitle:"Varför den måste läggas till så här:", noteBody:"MyBlaCa finns inte i App Store eller Google Play — den körs direkt från webben, så \"Lägg till på startskärmen\" är det som gör den till en app-ikon på din telefon. Det betyder också att det inte finns något att köpa, inget konto att registrera och inget företag som lagrar dina medicinska uppgifter.",
+useTitle:"Använda appen i vardagen",
+use1t:"Fyll i grunddata en gång", use1d:"Dina diagnosuppgifter, från ditt patologisvar eller din läkare. Du kan alltid gå tillbaka och redigera dem.",
+use2t:"Lägg till en händelse efter varje besök", use2d:"En cystoskopi, ett urinprov, en instillation eller en operation — tar under en minut att logga.",
+use3t:"Kontrollera historik och aktuell status när som helst", use3d:"Se din fullständiga tidslinje, filtrera efter typ och se ditt rekommenderade uppföljningsschema.",
+use4t:"Säkerhetskopiera då och då", use4d:"Exportera en säkerhetskopia från Om-skärmen — särskilt innan du byter telefon — och importera den på din nya enhet för att föra över din historik.",
+faqTitle:"Vanliga frågor",
+faq1q:"Skickas mina uppgifter någonstans?", faq1a:"Nej. Allt du anger sparas enbart i din telefons webbläsarlagring. Det finns ingen server, inget konto och ingen molnsynkronisering av något slag.",
+faq2q:"Vad händer om jag skaffar en ny telefon?", faq2a:"Exportera en säkerhetskopia från Om-skärmen på din gamla telefon (t.ex. genom att mejla den till dig själv eller spara den i ett molnlagringsutrymme du använder), installera MyBlaCa på den nya telefonen och importera filen där, från Om-skärmen.",
+faq3q:"Kan jag skriva ut mina uppgifter inför ett besök?", faq3a:"Ja — öppna \"Aktuell status\" och använd knappen för att skriva ut/spara som PDF, eller skriv ut historiktabellen.",
+faq4q:"Ersätter detta samtal med min läkare?", faq4a:"Nej. MyBlaCa är en personlig dagbok, inget diagnos- eller beslutsverktyg. Diskutera alltid dina resultat och din uppföljningsplan med din urolog.",
+footerNote:"Den här appen ansluter inte till internet och skickar ingen data — allt stannar på din enhet."
+});
+
+I18N.pl = Object.assign({}, I18N.en, {
+guideTitle:"MyBlaCa — Instrukcja", guideSubtitle:"Osobisty notatnik do kontroli raka urotelialnego, przechowywany wyłącznie na Twoim telefonie.",
+tryTitle:"Zobacz, zanim zainstalujesz", tryDesc:"Otwórz działającą wersję aplikacji wypełnioną przykładową historią pacjenta — klikaj śmiało, nic z tego nie zostaje zapisane.",
+tryButton:"▶ Wypróbuj interaktywne demo", openAppButton:"Otwórz prawdziwą aplikację", openAppButton2:"Otwórz MyBlaCa",
+whatTitle:"Co robi ta aplikacja",
+whatP1:"MyBlaCa to dedykowany notatnik dla pacjentów z rakiem urotelialnym — miejsce, w którym między wizytami w szpitalu można śledzić rozpoznanie, cystoskopie, zabiegi i wlewki dopęcherzowe.",
+whatP2:"To nie jest narzędzie do podejmowania decyzji terapeutycznych. Nie zastępuje Twojego urologa — po prostu pomaga Ci samemu mieć jasność co do faktów, także na wizyty.",
+whatP3b:"Wszystko zostaje na Twoim urządzeniu.", whatP3rest:"Nie ma konta, logowania ani serwera w chmurze — Twoje dane nigdy nie opuszczają telefonu, chyba że sam zdecydujesz się wyeksportować plik kopii zapasowej.",
+installTitle:"Zainstaluj na telefonie", installIntro:"MyBlaCa instaluje się jak zwykła aplikacja — z własną ikoną na ekranie głównym — bezpośrednio z przeglądarki, w mniej niż minutę. Bez sklepu z aplikacjami, bez konta.",
+androidTab:"Android", iosTab:"iPhone / iPad",
+and1t:"Otwórz link do aplikacji w Chrome", and1d:"Użyj przeglądarki Chrome na telefonie (nie innej) i otwórz link do MyBlaCa, który dostałeś od przychodni lub bliskiej osoby.",
+and2t:"Otwórz menu", and2d:"Dotknij trzech kropek (⋮) w prawym górnym rogu Chrome.",
+and3t:"Dotknij „Dodaj do ekranu głównego” lub „Zainstaluj aplikację”", and3d:"Chrome może pokazać to automatycznie jako baner na dole ekranu — możesz też dotknąć jego.",
+and4t:"Potwierdź", and4d:"Dotknij „Dodaj” lub „Zainstaluj”. Ikona MyBlaCa pojawi się teraz na ekranie głównym jak każda inna aplikacja.",
+and5t:"Otwieraj z ikony", and5d:"Od teraz zawsze otwieraj MyBlaCa z ikony na ekranie głównym — działa offline i bezpiecznie przechowuje dane między wizytami.",
+ios1t:"Otwórz link do aplikacji w Safari", ios1d:"To działa tylko w Safari — nie w Chrome ani innej przeglądarce na iPhonie. Otwórz link do MyBlaCa, który dostałeś od przychodni lub bliskiej osoby.",
+ios2t:"Dotknij przycisku Udostępnij", ios2d:"To kwadratowa ikona ze strzałką w górę, na dolnym pasku narzędzi (lub górnym, na iPadzie).",
+ios3t:"Dotknij „Dodaj do ekranu początkowego”", ios3d:"Przewiń menu udostępniania w dół, jeśli nie widzisz tej opcji od razu.",
+ios4t:"Dotknij „Dodaj”", ios4d:"Ikona MyBlaCa pojawi się teraz na ekranie głównym jak każda inna aplikacja.",
+ios5t:"Otwieraj z ikony", ios5d:"Od teraz zawsze otwieraj MyBlaCa z ikony na ekranie głównym — działa offline i bezpiecznie przechowuje dane między wizytami.",
+noteTitle:"Dlaczego trzeba dodać ją w ten sposób:", noteBody:"MyBlaCa nie jest w App Store ani Google Play — działa bezpośrednio z przeglądarki, więc „Dodaj do ekranu głównego” to sposób na zamianę jej w ikonę aplikacji na telefonie. To także oznacza, że nie ma niczego do kupienia, żadnego konta do zakładania i żadnej firmy przechowującej Twoje dane medyczne.",
+useTitle:"Codzienne korzystanie z aplikacji",
+use1t:"Uzupełnij dane podstawowe raz", use1d:"Szczegóły rozpoznania, z wyniku histopatologicznego lub od lekarza. Zawsze możesz wrócić i je edytować.",
+use2t:"Dodawaj wpis po każdej wizycie", use2d:"Cystoskopia, badanie moczu, wlewka lub zabieg — zajmuje mniej niż minutę.",
+use3t:"Sprawdzaj historię i aktualny status w dowolnym momencie", use3d:"Zobacz pełną oś czasu, filtruj po rodzaju wydarzenia i sprawdź zalecany harmonogram kontroli.",
+use4t:"Rób kopie zapasowe od czasu do czasu", use4d:"Z ekranu „O aplikacji” wyeksportuj plik kopii zapasowej — zwłaszcza przed zmianą telefonu — i wczytaj go na nowym urządzeniu, żeby przenieść historię.",
+faqTitle:"Najczęstsze pytania",
+faq1q:"Czy moje dane są gdzieś wysyłane?", faq1a:"Nie. Wszystko, co wpisujesz, jest przechowywane wyłącznie w pamięci przeglądarki Twojego telefonu. Nie ma serwera, konta ani żadnej synchronizacji w chmurze.",
+faq2q:"Co się stanie, jeśli zmienię telefon?", faq2a:"Wyeksportuj plik kopii zapasowej z ekranu „O aplikacji” na starym telefonie (np. wysyłając go do siebie mailem lub zapisując w używanej chmurze), zainstaluj MyBlaCa na nowym telefonie i wczytaj ten plik na jego ekranie „O aplikacji”.",
+faq3q:"Czy mogę wydrukować dane na wizytę?", faq3a:"Tak — otwórz „Aktualny status” i użyj przycisku drukowania/zapisu jako PDF, albo wydrukuj tabelę historii.",
+faq4q:"Czy to zastępuje rozmowę z lekarzem?", faq4a:"Nie. MyBlaCa to osobisty notatnik, a nie narzędzie diagnostyczne ani decyzyjne. Wyniki i plan kontroli zawsze omawiaj ze swoim urologiem.",
+footerNote:"Ta aplikacja nie łączy się z internetem ani nie wysyła żadnych danych — wszystko zostaje na Twoim urządzeniu."
+});
+
+const SUPPORTED_LANGS = ['en','de','fr','es','sv','pl'];
+const STORAGE_LANG_KEY = 'myblaca_lang';
+
+function detectLang(){
+  let saved = null;
+  try{ saved = localStorage.getItem(STORAGE_LANG_KEY); }catch(e){}
+  if(saved && SUPPORTED_LANGS.includes(saved)) return saved;
+  const browserLangs = navigator.languages || [navigator.language || 'en'];
+  for(const bl of browserLangs){
+    const code = bl.slice(0,2).toLowerCase();
+    if(SUPPORTED_LANGS.includes(code)) return code;
+  }
+  return 'en';
+}
+let currentLang = detectLang();
+function t(key){ return (I18N[currentLang] && I18N[currentLang][key]!==undefined) ? I18N[currentLang][key] : (I18N.en[key]!==undefined ? I18N.en[key] : key); }
+
+function setLang(lang){
+  currentLang = lang;
+  try{ localStorage.setItem(STORAGE_LANG_KEY, lang); }catch(e){}
+  document.documentElement.lang = lang;
+  applyTranslations();
+}
+function applyTranslations(){
+  document.getElementById('langSwitch').value = currentLang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.getAttribute('data-i18n')); });
+}
+function setPlatform(p){
+  document.getElementById('tabAndroid').classList.toggle('active', p==='android');
+  document.getElementById('tabIos').classList.toggle('active', p==='ios');
+  document.getElementById('panelAndroid').classList.toggle('active', p==='android');
+  document.getElementById('panelIos').classList.toggle('active', p==='ios');
+}
+
+// Default the platform tab to what the visitor is likely using.
+(function(){
+  const ua = navigator.userAgent || '';
+  if(/iPhone|iPad|iPod/i.test(ua)) setPlatform('ios');
+})();
+
+document.documentElement.lang = currentLang;
+applyTranslations();
+</script>
+</body>
+</html>

@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>MyBlaCa — Demo</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#1F5F5B">
+<style>
+  :root{
+    --bg:#F6F4F0; --surface:#FFFFFF; --ink:#1C2624; --ink-soft:#5B6664;
+    --primary:#1F5F5B; --primary-dark:#14403D; --accent:#C97B3D; --danger:#B0413E;
+    --line:#E4DFD6; --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.45;padding-bottom:60px;}
+  #demoBanner{background:var(--accent);color:#fff;font-size:0.78rem;font-weight:600;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:50;}
+  #demoBannerActions{display:flex;gap:10px;flex-shrink:0;}
+  #demoBannerActions button, #demoBannerActions a{background:rgba(255,255,255,0.22);color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:0.74rem;font-weight:700;text-decoration:none;cursor:pointer;}
+  header{background:var(--primary);color:#fff;padding:16px 16px 12px;border-radius:0 0 18px 18px;}
+  .headerTop{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .headerTop > div:first-child{min-width:0;flex:1 1 auto;}
+  header h1{margin:0;font-size:1.25rem;letter-spacing:-0.01em;}
+  header p{margin:6px 0 0;color:#CFE3E0;font-size:0.78rem;white-space:nowrap;overflow-x:auto;scrollbar-width:none;}
+  header p::-webkit-scrollbar{display:none;}
+  select#langSwitch{width:auto;flex:0 0 auto;background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.35);border-radius:9px;padding:6px 10px;font-size:0.82rem;font-weight:600;}
+  select#langSwitch option{color:#1C2624;}
+  .tabbar{display:flex;gap:4px;overflow-x:auto;margin-top:12px;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
+  .tabbar button{flex:0 0 auto;background:rgba(255,255,255,0.14);color:#E8F3F1;font-size:0.78rem;font-weight:600;padding:7px 12px;border-radius:20px;white-space:nowrap;}
+  .tabbar button.active{background:#fff;color:var(--primary-dark);}
+  .banner{margin:12px 14px 0;background:var(--accent);color:#fff;padding:10px 14px;border-radius:12px;font-size:0.86rem;font-weight:600;cursor:pointer;}
+  .banner.hidden{display:none;}
+  main{max-width:640px;margin:0 auto;padding:16px 14px;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+  .card h2{margin:0 0 10px;font-size:1.02rem;color:var(--primary-dark);}
+  .card h3{margin:14px 0 8px;font-size:0.88rem;color:var(--primary-dark);border-top:1px solid var(--line);padding-top:12px;}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+  label{display:block;font-size:0.78rem;color:var(--ink-soft);margin-bottom:3px;font-weight:600;}
+  .field{flex:1 1 140px;}
+  input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:9px;font-size:0.93rem;font-family:inherit;background:#fff;color:var(--ink);}
+  textarea{min-height:54px;resize:vertical;}
+  button{font-family:inherit;font-size:0.9rem;font-weight:600;border:none;border-radius:10px;padding:10px 16px;cursor:pointer;}
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-primary:active{background:var(--primary-dark);}
+  .btn-secondary{background:#EFEAE1;color:var(--ink);}
+  .btn-danger{background:transparent;color:var(--danger);padding:6px 8px;font-size:0.82rem;}
+  .btn-ghost{background:transparent;color:var(--primary);padding:6px 8px;font-size:0.85rem;}
+  .btn-block{width:100%;}
+  .tag{display:inline-block;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:20px;color:#fff;text-transform:uppercase;letter-spacing:0.02em;}
+  .tag-urine_test{background:#7A7361;}
+  .tag-office_cystoscopy{background:#3E7C79;}
+  .tag-instillation{background:#4A6FA5;}
+  .tag-surgery{background:#8C5E2A;}
+  .tag-primary{background:var(--primary-dark);}
+  .tag-pending{background:var(--accent);}
+  .tag-recurrence{background:var(--danger);}
+  .timelineH{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 0;scrollbar-width:thin;}
+  .tlLane{display:flex;align-items:center;border-bottom:1px solid var(--line);padding:14px 0;}
+  .tlLane:last-child{border-bottom:none;}
+  .tlLaneLabel{flex:0 0 76px;position:sticky;left:0;background:var(--surface);font-size:0.7rem;font-weight:700;color:var(--ink-soft);padding-right:8px;z-index:2;line-height:1.2;}
+  .tlLaneTrack{position:relative;height:52px;}
+  .tlLaneTrack::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--line);z-index:0;transform:translateY(-50%);}
+  .tlBreak{position:absolute;top:50%;width:9px;height:15px;transform:translate(-50%,-50%) skewX(-18deg);background:var(--bg);border-left:2px solid var(--surface);border-right:2px solid var(--surface);z-index:0;}
+  .tlNode{position:absolute;top:0;width:58px;margin-left:-29px;text-align:center;cursor:pointer;z-index:1;}
+  #tlTooltip{position:fixed;z-index:200;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:0.8rem;box-shadow:0 6px 18px rgba(20,28,26,0.2);max-width:260px;display:none;pointer-events:none;}
+  #tlTooltip .statRow{padding:3px 0;font-size:0.78rem;gap:10px;}
+  #tlTooltip .tlTipTitle{font-weight:700;margin-bottom:4px;color:var(--primary-dark);font-size:0.82rem;}
+  .tlNode:active{opacity:0.7;}
+  .tlBadges{position:absolute;top:-12px;left:50%;transform:translateX(-50%);display:flex;gap:3px;}
+  .tlBadge{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .tlBadge.rec{background:var(--danger);}
+  .tlBadge.pend{background:var(--accent);}
+  .tlDot{width:16px;height:16px;border-radius:50%;margin:0 auto 5px;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--line);background:var(--primary);}
+  .tl-primary .tlDot{background:var(--primary-dark);}
+  .tl-urine_test .tlDot{background:#7A7361;}
+  .tl-office_cystoscopy .tlDot{background:#3E7C79;}
+  .tl-instillation .tlDot{background:#4A6FA5;}
+  .tl-surgery .tlDot{background:#8C5E2A;}
+  .tlDate{font-weight:700;font-size:0.7rem;white-space:nowrap;}
+  .empty{text-align:center;color:var(--ink-soft);padding:20px 10px;font-size:0.88rem;}
+  .viewToggle{display:flex;gap:6px;margin-bottom:12px;}
+  .viewToggle button{background:#EFEAE1;color:var(--ink-soft);font-size:0.8rem;padding:7px 14px;}
+  .viewToggle button.active{background:var(--primary);color:#fff;}
+  .tableWrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table.histTable{border-collapse:collapse;width:100%;font-size:0.84rem;min-width:560px;}
+  table.histTable th{text-align:left;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.02em;color:var(--ink-soft);padding:6px 10px;border-bottom:2px solid var(--line);white-space:nowrap;}
+  table.histTable td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  table.histTable tr:last-child td{border-bottom:none;}
+  table.histTable td.colDate{white-space:nowrap;font-weight:700;}
+  table.histTable td.colNotes{color:var(--ink-soft);max-width:220px;white-space:pre-wrap;}
+  table.histTable td.colActions{white-space:nowrap;}
+  table.histTable td.colActions button{padding:4px 8px;font-size:0.76rem;margin-right:4px;}
+  .filters button{background:#EFEAE1;color:var(--ink-soft);font-size:0.78rem;padding:6px 11px;}
+  .filters button.active{background:var(--primary);color:#fff;}
+  .footer-note{text-align:center;font-size:0.76rem;color:var(--ink-soft);padding:10px 20px 0;}
+  .hidden{display:none !important;}
+  .modalOverlay{position:fixed;inset:0;background:rgba(20,28,26,0.55);display:flex;align-items:flex-end;justify-content:center;z-index:100;}
+  .modalCard{background:var(--surface);border-radius:16px 16px 0 0;padding:18px;width:100%;max-width:640px;max-height:80vh;overflow-y:auto;}
+  .modalHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .modalHeader h3{margin:0;font-size:1rem;color:var(--primary-dark);}
+  @media (min-width:640px){
+    .modalOverlay{align-items:center;}
+    .modalCard{border-radius:16px;}
+  }
+  .statRow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:0.9rem;}
+  .statRow:last-child{border-bottom:none;}
+  .statRow b{text-align:right;}
+  .schedBox{background:#EFF6F5;border-radius:10px;padding:12px;font-size:0.87rem;margin-top:6px;}
+  .disclaimer{font-size:0.76rem;color:var(--ink-soft);margin-top:8px;font-style:italic;}
+  .thumbGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;}
+  .thumbCard{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;}
+  .thumbCard img{width:100%;height:100px;object-fit:cover;display:block;}
+  .thumbCard .thumbMeta{padding:6px 8px;font-size:0.72rem;color:var(--ink-soft);}
+  .aboutBox p{font-size:0.9rem;margin:0 0 10px;}
+  .aboutBox strong{color:var(--primary-dark);}
+  @media print{
+    header,.no-print{display:none !important;}
+    body{background:#fff;padding-bottom:0;}
+    .screen{display:block !important;}
+    #screen-add,#screen-attachments,#screen-about{display:none !important;}
+    .card{border:none;padding:0;margin-bottom:16px;page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<div id="demoBanner">
+  <span id="demoBannerText" data-i18n="demoBannerText">DEMO — sample data, nothing here is saved permanently</span>
+  <div id="demoBannerActions">
+    <button id="demoResetBtn" onclick="resetDemoData()">↺ <span data-i18n="demoResetLabel">Reset demo</span></button>
+    <a id="demoExitLink" href="index.html">✕ <span data-i18n="demoExitLabel">Exit demo</span></a>
+  </div>
+</div>
+
+<header>
+  <div class="headerTop">
+    <div>
+      <h1 data-i18n="appTitle">MyBlaCa</h1>
+      <p data-i18n="appSubtitle">Personal notebook for urothelial cancer follow-up</p>
+    </div>
+    <select id="langSwitch" class="no-print" onchange="setLang(this.value)">
+      <option value="en">EN</option><option value="de">DE</option><option value="fr">FR</option>
+      <option value="es">ES</option><option value="sv">SV</option><option value="pl">PL</option>
+    </select>
+  </div>
+  <div class="tabbar no-print">
+    <button data-tab="profile" onclick="setTab('profile')" data-i18n="tab_profile">Primary data</button>
+    <button data-tab="add" onclick="setTab('add')" data-i18n="tab_add">Add event</button>
+    <button data-tab="history" onclick="setTab('history')" data-i18n="tab_history">History</button>
+    <button data-tab="status" onclick="setTab('status')" data-i18n="tab_status">Current status</button>
+    <button data-tab="attachments" onclick="setTab('attachments')" data-i18n="tab_attachments">Attachments</button>
+    <button data-tab="about" onclick="setTab('about')" data-i18n="tab_about">About</button>
+  </div>
+</header>
+
+<div class="banner hidden no-print" id="pendingBanner" onclick="jumpToPending()"></div>
+
+<main>
+
+  <!-- PROFILE -->
+  <section class="screen" id="screen-profile">
+    <div class="card">
+      <h2 data-i18n="profileTitle">Primary data</h2>
+      <div class="row">
+        <div class="field"><label data-i18n="birthDateLabel">Date of birth</label><input type="date" id="p_birthDate"></div>
+        <div class="field"><label data-i18n="sexLabel">Sex</label><select id="p_sex"></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label data-i18n="diagDateLabel">Date of diagnosis (first surgery)</label><input type="date" id="p_diagDate"></div>
+        <div class="field"><label data-i18n="locationLabel">Primary tumor location</label><select id="p_location" onchange="renderProfileForm()"></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label data-i18n="tStageLabel">T stage</label><select id="p_tStage" onchange="renderProfileForm()"></select></div>
+        <div class="field"><label data-i18n="grade1Label">Grade (WHO 1973)</label><select id="p_grade1"></select></div>
+        <div class="field"><label data-i18n="grade2Label">Grade (WHO 2004/2016)</label><select id="p_grade2"></select></div>
+      </div>
+      <p class="disclaimer" data-i18n="gradeHint">At least one grading system must be provided.</p>
+      <div class="row">
+        <div class="field" id="p_cisWrap"><label data-i18n="cisLabel">Concomitant CIS</label><select id="p_cis"></select></div>
+        <div class="field"><label data-i18n="singleDoseLabel">Single dose postop instillation</label><select id="p_singleDose"></select></div>
+      </div>
+
+      <div id="bladderFields" class="hidden">
+        <h3 data-i18n="bladderSectionTitle">Bladder-specific data</h3>
+        <div class="row">
+          <div class="field"><label data-i18n="diameterLabel">Tumor diameter</label><select id="p_diameter"></select></div>
+          <div class="field"><label data-i18n="multiplicityLabel">Single / multiple</label><select id="p_multiplicity"></select></div>
+        </div>
+        <div class="row">
+          <div class="field"><label data-i18n="reTURBLabel">reTURB performed?</label><select id="p_reTURB" onchange="renderProfileForm()"></select></div>
+        </div>
+        <div id="reTURBFields" class="hidden">
+          <div class="row">
+            <div class="field"><label data-i18n="reTURBDateLabel">reTURB date</label><input type="date" id="p_reTURBDate"></div>
+            <div class="field"><label data-i18n="tStageLabel">T stage</label><select id="p_reTURBT"></select></div>
+            <div class="field"><label data-i18n="grade1Label">Grade (WHO 1973)</label><select id="p_reTURBG1"></select></div>
+            <div class="field"><label data-i18n="grade2Label">Grade (WHO 2004/2016)</label><select id="p_reTURBG2"></select></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field"><label data-i18n="riskGroupLabel">Risk group</label><select id="p_riskGroup"></select></div>
+        </div>
+      </div>
+
+      <div id="utucFields" class="hidden">
+        <h3 data-i18n="utucSectionTitle">Renal pelvis / ureter — specific data</h3>
+        <div class="row">
+          <div class="field"><label data-i18n="sideLabel">Side</label><select id="p_side"></select></div>
+        </div>
+        <div class="row">
+          <div class="field"><label data-i18n="neoadjLabel">Neoadjuvant treatment</label><select id="p_neoadj" onchange="renderProfileForm()"></select></div>
+          <div class="field" id="neoadjTypeWrap"><label data-i18n="neoadjTypeLabel">What kind?</label><input type="text" id="p_neoadjType"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label data-i18n="lnLabel">Lymph node dissection performed?</label><select id="p_ln" onchange="renderProfileForm()"></select></div>
+          <div class="field" id="nStageWrap"><label data-i18n="nStageLabel">N stage</label><select id="p_nStage"></select></div>
+        </div>
+        <div class="row">
+          <div class="field"><label data-i18n="adjLabel">Adjuvant treatment</label><select id="p_adj" onchange="renderProfileForm()"></select></div>
+          <div class="field" id="adjTypeWrap"><label data-i18n="adjTypeLabel">What kind?</label><input type="text" id="p_adjType"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field"><label data-i18n="notesLabel">Notes</label><textarea id="p_notes"></textarea></div>
+      </div>
+      <button class="btn-primary btn-block" data-i18n="saveProfile" onclick="saveProfile()">Save primary data</button>
+    </div>
+  </section>
+
+  <!-- ADD EVENT -->
+  <section class="screen" id="screen-add">
+    <div class="card">
+      <h2 data-i18n="addEventTitle">Add event</h2>
+      <div class="row">
+        <div class="field"><label data-i18n="eventTypeLabel">Event type</label><select id="ev_type" onchange="renderEventFields()"></select></div>
+        <div class="field"><label data-i18n="eventDateLabel">Date</label><input type="date" id="ev_date"></div>
+      </div>
+      <div id="ev_extraFields"></div>
+      <div class="row">
+        <div class="field"><label data-i18n="notesLabel">Notes</label><textarea id="ev_notes"></textarea></div>
+      </div>
+      <button class="btn-primary btn-block" data-i18n="addEventButton" onclick="addEvent()">Add to journal</button>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="screen" id="screen-history">
+    <div class="card">
+      <h2 data-i18n="historyTitle">History</h2>
+      <div class="viewToggle no-print">
+        <button id="viewBtnTable" class="active" onclick="setHistoryView('table')" data-i18n="viewTable">Table</button>
+        <button id="viewBtnTimeline" onclick="setHistoryView('timeline')" data-i18n="viewTimeline">Timeline</button>
+      </div>
+      <div class="filters no-print">
+        <button class="active" id="filterBtn-all" onclick="toggleAllFilter()" data-i18n="filterAll">All</button>
+        <button data-f="urine_test" onclick="toggleTypeFilter('urine_test')" data-i18n="tag_urine_test">Urine test</button>
+        <button data-f="office_cystoscopy" onclick="toggleTypeFilter('office_cystoscopy')" data-i18n="tag_office_cystoscopy">Cystoscopy</button>
+        <button data-f="instillation" onclick="toggleTypeFilter('instillation')" data-i18n="tag_instillation">Instillation</button>
+        <button data-f="surgery" onclick="toggleTypeFilter('surgery')" data-i18n="tag_surgery">Surgery</button>
+        <button data-f="recurrenceOnly" onclick="toggleRecurrenceFilter()" data-i18n="filterRecurrence">Recurrences only</button>
+      </div>
+      <div id="tableViewWrap" class="tableWrap">
+        <table class="histTable">
+          <thead>
+            <tr>
+              <th data-i18n="colEvent">Event</th>
+              <th data-i18n="colDate">Date</th>
+              <th data-i18n="colDetails">Details</th>
+              <th data-i18n="colNotes">Notes</th>
+              <th class="no-print" data-i18n="colActions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableViewBody"></tbody>
+        </table>
+      </div>
+      <div class="timelineH hidden" id="timelineList"></div>
+    </div>
+  </section>
+
+  <!-- STATUS -->
+  <section class="screen" id="screen-status">
+    <div class="card">
+      <h2 data-i18n="statusTitle">Current status</h2>
+      <div id="statusBox"></div>
+      <h3 data-i18n="scheduleTitle">Recommended follow-up schedule</h3>
+      <div class="schedBox" id="scheduleBox"></div>
+      <p class="disclaimer" data-i18n="scheduleDisclaimer">General orientation based on EAU guidelines — not a substitute for your doctor's advice.</p>
+      <button class="btn-secondary btn-block no-print" style="margin-top:12px" data-i18n="printButton" onclick="window.print()"></button>
+    </div>
+  </section>
+
+  <!-- ATTACHMENTS -->
+  <section class="screen" id="screen-attachments">
+    <div class="card">
+      <h2 data-i18n="attachmentsTitle">Attachments</h2>
+      <div class="row">
+        <div class="field"><label data-i18n="attachEventLabel">Link to event (optional)</label><select id="att_event"></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label data-i18n="attachNoteLabel">Description</label><input type="text" id="att_note"></div>
+      </div>
+      <input type="file" id="att_file" accept="image/*" class="no-print">
+      <button class="btn-primary btn-block" style="margin-top:10px" data-i18n="attachAddButton" onclick="addAttachment()">Add photo</button>
+      <p class="disclaimer" data-i18n="attachStorageHint">Photos are compressed and stored only on this device. Add a limited number to save storage space.</p>
+    </div>
+    <div class="card">
+      <div class="thumbGrid" id="attachGrid"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="screen" id="screen-about">
+    <div class="card aboutBox">
+      <h2 data-i18n="aboutTitle">About this app</h2>
+      <p data-i18n="aboutP1"></p>
+      <p data-i18n="aboutP2"></p>
+      <p data-i18n="aboutP3"></p>
+      <p data-i18n="aboutP4"></p>
+      <p data-i18n="aboutP5"></p>
+      <div class="row no-print" style="margin-top:14px">
+        <button class="btn-secondary" style="flex:1" data-i18n="exportButton" onclick="exportData()"></button>
+        <button class="btn-secondary" style="flex:1" data-i18n="importButton" onclick="document.getElementById('importFile').click()"></button>
+      </div>
+      <input type="file" id="importFile" accept="application/json" class="hidden" onchange="importData(event)">
+    </div>
+  </section>
+
+</main>
+
+<div id="tlTooltip" class="no-print"></div>
+<div id="detailModal" class="modalOverlay hidden no-print" onclick="if(event.target===this)closeEventDetail()">
+  <div class="modalCard">
+    <div class="modalHeader">
+      <h3 id="detailModalTitle" data-i18n="detailsTitle">Event details</h3>
+      <button class="btn-ghost" onclick="closeEventDetail()">✕</button>
+    </div>
+    <div id="detailModalBody"></div>
+    <div id="detailModalActions" class="row" style="margin-top:10px"></div>
+    <button class="btn-secondary btn-block" style="margin-top:6px" onclick="closeEventDetail()" data-i18n="closeButton">Close</button>
+  </div>
+</div>
+<p class="footer-note no-print" data-i18n="footerNote"></p>
+
+<script>
+/* ================= I18N ================= */
+const I18N = {};
+
+I18N.en = {
+appTitle:"MyBlaCa", appSubtitle:"Personal notebook for urothelial cancer follow-up",
+tab_profile:"Primary data", tab_add:"Add event", tab_history:"History", tab_status:"Current status", tab_attachments:"Attachments", tab_about:"About",
+profileTitle:"Primary data",
+birthDateLabel:"Date of birth", sexLabel:"Sex", sex_male:"Male", sex_female:"Female",
+diagDateLabel:"Date of diagnosis (first surgery)", locationLabel:"Primary tumor location",
+loc_renal_pelvis:"Renal pelvis", loc_ureter:"Ureter", loc_bladder:"Bladder", loc_prostatic_urethra:"Prostatic urethra",
+tStageLabel:"T stage", t_t0:"pT0 (no residual tumor)", t_ta:"Ta", t_t1m:"T1m", t_t1e:"T1e", t_tis:"Tis", t_t2:"T2 (muscle-invasive)", t_t1:"T1", t_t3:"T3", t_t4:"T4",
+grade1Label:"Grade (WHO 1973)", g1_g1:"G1", g1_g2:"G2", g1_g3:"G3",
+grade2Label:"Grade (WHO 2004/2016)", g2_lg:"Low grade (LG)", g2_hg:"High grade (HG)",
+gradeHint:"At least one grading system must be provided.",
+cisLabel:"Concomitant CIS", singleDoseLabel:"Single dose postop intravesical instillation",
+yes:"Yes", no:"No", selectPlaceholder:"— select —", notApplicable:"N/A",
+bladderSectionTitle:"Bladder-specific data",
+diameterLabel:"Tumor diameter", dia_lt3:"Less than 3 cm", dia_ge3:"3 cm or more",
+multiplicityLabel:"Single / multiple", mult_single:"Single", mult_multiple:"Multiple",
+reTURBLabel:"reTURB performed?", reTURBDateLabel:"reTURB date",
+riskGroupLabel:"Risk group", risk_low:"Low", risk_intermediate:"Intermediate", risk_high:"High", risk_very_high:"Very high",
+utucSectionTitle:"Renal pelvis / ureter — specific data",
+sideLabel:"Side", side_left:"Left", side_right:"Right",
+neoadjLabel:"Neoadjuvant treatment", neoadjTypeLabel:"What kind?",
+lnLabel:"Lymph node dissection performed?", nStageLabel:"N stage",
+n_n0:"N0", n_n1:"N1", n_n2:"N2", n_n3:"N3", n_nx:"Nx",
+adjLabel:"Adjuvant treatment", adjTypeLabel:"What kind?",
+notesLabel:"Notes", saveProfile:"Save primary data", profileSavedNeedGrade:"Please provide at least one grading system (WHO 1973 or WHO 2004/2016).",
+addEventTitle:"Add event", eventTypeLabel:"Event type", eventDateLabel:"Date", addEventButton:"Add to journal",
+type_urine_test:"Urine test (no cystoscopy)", type_office_cystoscopy:"Office cystoscopy", type_instillation:"Intravesical instillation", type_surgery:"Surgery",
+tag_urine_test:"Urine test", tag_office_cystoscopy:"Cystoscopy", tag_instillation:"Instillation", tag_surgery:"Surgery", tag_primary:"Diagnosis",
+urineKindLabel:"What kind of test?", urineResultLabel:"Result", urineRes_negative:"Negative", urineRes_positive:"Positive",
+recurrenceLabel:"Recurrence?", recurrenceActionLabel:"Planned action",
+rec_biopsy:"Biopsy", rec_fulguration:"Fulguration", rec_surveillance:"Surveillance", rec_surgery_scheduled:"Surgery scheduled",
+cytologyLabel:"Cytology taken?", parisLabel:"Paris System category (TPS 2.0)",
+paris_pending:"Pending / not available yet",
+paris_nondiagnostic:"I. Non-diagnostic / unsatisfactory", paris_negative:"II. Negative for HGUC (incl. low-grade urothelial neoplasia)",
+paris_atypical:"III. Atypical urothelial cells", paris_suspicious:"IV. Suspicious for HGUC",
+paris_hguc:"V. High-grade urothelial carcinoma (HGUC)", paris_other:"VI. Other malignancy (primary or metastatic)",
+instillationTypeLabel:"Instillation type", inst_chemo:"Chemotherapy", inst_bcg:"BCG",
+surgeryTypeLabel:"Surgery type", surg_turb:"TURB", surg_cystoscopy_biopsy:"Cystoscopy with biopsy", surg_fulguration:"Fulguration",
+resultTStageLabel:"T stage (result)", resultGrade1Label:"Grade result (WHO 1973)", resultGrade2Label:"Grade result (WHO 2004/2016)",
+pending:"Pending / not available yet",
+askDate:"Please enter the event date.",
+historyTitle:"History", filterAll:"All", filterRecurrence:"Recurrences", timelineEmpty:"No entries in this category.",
+viewTable:"Table", viewTimeline:"Timeline",
+colEvent:"Event", colDate:"Date", colDetails:"Details", colNotes:"Notes", colActions:"Actions",
+deleteButton:"Delete", confirmDelete:"Delete this entry?", completeButton:"Complete result", saveButton:"Save", cancelButton:"Cancel", detailsButton:"Details", detailsTitle:"Event details", closeButton:"Close",
+pendingBadge:"Result pending",
+pendingBannerText:n=>`${n} ${n===1?'entry needs':'entries need'} a result to be completed — tap here.`,
+statusTitle:"Current status",
+st_diagDate:"Date of first diagnosis", st_risk:"Risk group", st_recurrences:"Number of recurrences",
+st_lastRecurrence:"Date of last recurrence", st_instillations:"Instillation series completed",
+st_lastCysto:"Date of last cystoscopy", st_none:"None recorded yet", st_noProfile:"Please fill in primary data first.",
+scheduleTitle:"Recommended follow-up schedule", scheduleDisclaimer:"General orientation based on EAU guidelines — not a substitute for your doctor's advice.",
+sched_low:"Cystoscopy at 3 months. If negative, next cystoscopy at 9 months, then annually until year 5.",
+sched_intermediate:"Cystoscopy and cytology at 3 months, then every 3–6 months up to year 3, every 6–12 months up to year 5, then annually.",
+sched_high:"Cystoscopy and cytology every 3 months for 2 years, every 4 months in year 3, every 6 months up to year 5, then annually — long-term follow-up recommended.",
+sched_very_high:"As for high risk, but a more intensive, individualized schedule is often used, with earlier consideration of upper tract imaging.",
+sched_utuc:"Typically cystoscopy and urine cytology (e.g. at 3 months, then per risk category) plus periodic upper tract imaging (CT urography) — to be individualized with your urologist.",
+sched_needRisk:"Set a risk group (or fill bladder-specific data) to see a schedule.",
+printButton:"🖨 Print / save as PDF",
+attachmentsTitle:"Attachments", attachEventLabel:"Link to event (optional)", attachNoneOption:"— none —",
+attachNoteLabel:"Description", attachAddButton:"Add photo", attachStorageHint:"Photos are compressed and stored only on this device. Add a limited number to save storage space.",
+attachEmpty:"No attachments yet.", attachDelete:"Delete",
+aboutTitle:"About this app",
+aboutP1:"MyBlaCa is a dedicated notebook for patients with urothelial carcinoma, used to store important clinical information — it is not a tool for making treatment decisions.",
+aboutP2:"Final decisions are always made by qualified medical staff. Always discuss your results and follow-up plan with your urologist.",
+aboutP3:"All data is stored only on this mobile device — nothing is sent to the cloud or to any external database.",
+aboutP4:"To use the app on another device of your own, export a backup file on one device and import it on the other. There is no automatic cloud synchronization — you control the transfer yourself.",
+aboutP5:"You can make a backup at any time, or print / save your data as a PDF from the Current Status screen.",
+exportButton:"⬇ Export backup (file)", importButton:"⬆ Load backup",
+importConfirm:"This will replace the current data in the app with the data from the backup file. Continue?",
+importSuccess:"Data has been loaded.", importError:"Could not load the file — check that it's a valid backup file.",
+footerNote:"This app does not connect to the internet or send any data — everything stays on your device.",
+demoBannerText:"DEMO — sample data, nothing you enter here is saved permanently", demoResetLabel:"Reset demo", demoExitLabel:"Exit demo", demoResetConfirm:"Reset the demo back to its original sample data? Anything you changed here will be lost.",
+};
+
+I18N.de = Object.assign({}, I18N.en, {
+appTitle:"MyBlaCa", appSubtitle:"Persönliches Tagebuch zur Nachsorge bei Urothelkarzinom",
+tab_profile:"Basisdaten", tab_add:"Eintrag hinzufügen", tab_history:"Verlauf", tab_status:"Aktueller Status", tab_attachments:"Anhänge", tab_about:"Info",
+profileTitle:"Basisdaten",
+birthDateLabel:"Geburtsdatum", sexLabel:"Geschlecht", sex_male:"Männlich", sex_female:"Weiblich",
+diagDateLabel:"Diagnosedatum (erste Operation)", locationLabel:"Primäre Tumorlokalisation",
+loc_renal_pelvis:"Nierenbecken", loc_ureter:"Harnleiter", loc_bladder:"Harnblase", loc_prostatic_urethra:"Prostatische Urethra",
+tStageLabel:"T-Stadium", t_t0:"pT0 (kein Resttumor)", t_ta:"Ta", t_t1m:"T1m", t_t1e:"T1e", t_tis:"Tis", t_t2:"T2 (muskelinvasiv)", t_t1:"T1", t_t3:"T3", t_t4:"T4",
+grade1Label:"Grad (WHO 1973)", g1_g1:"G1", g1_g2:"G2", g1_g3:"G3",
+grade2Label:"Grad (WHO 2004/2016)", g2_lg:"Low grade (LG)", g2_hg:"High grade (HG)",
+gradeHint:"Mindestens ein Grading-System muss angegeben werden.",
+cisLabel:"Begleitendes CIS", singleDoseLabel:"Einmalige postoperative intravesikale Instillation",
+yes:"Ja", no:"Nein", selectPlaceholder:"— auswählen —", notApplicable:"Entfällt",
+bladderSectionTitle:"Blasenspezifische Daten",
+diameterLabel:"Tumordurchmesser", dia_lt3:"Weniger als 3 cm", dia_ge3:"3 cm oder mehr",
+multiplicityLabel:"Einzeln / multipel", mult_single:"Einzeln", mult_multiple:"Multipel",
+reTURBLabel:"Re-TURB durchgeführt?", reTURBDateLabel:"Re-TURB-Datum",
+riskGroupLabel:"Risikogruppe", risk_low:"Niedrig", risk_intermediate:"Mittel", risk_high:"Hoch", risk_very_high:"Sehr hoch",
+utucSectionTitle:"Nierenbecken / Harnleiter — spezifische Daten",
+sideLabel:"Seite", side_left:"Links", side_right:"Rechts",
+neoadjLabel:"Neoadjuvante Therapie", neoadjTypeLabel:"Welche Art?",
+lnLabel:"Lymphknotendissektion durchgeführt?", nStageLabel:"N-Stadium",
+n_n0:"N0", n_n1:"N1", n_n2:"N2", n_n3:"N3", n_nx:"Nx",
+adjLabel:"Adjuvante Therapie", adjTypeLabel:"Welche Art?",
+notesLabel:"Notizen", saveProfile:"Basisdaten speichern", profileSavedNeedGrade:"Bitte mindestens ein Grading-System angeben (WHO 1973 oder WHO 2004/2016).",
+addEventTitle:"Eintrag hinzufügen", eventTypeLabel:"Art des Eintrags", eventDateLabel:"Datum", addEventButton:"Zum Tagebuch hinzufügen",
+type_urine_test:"Urintest (ohne Zystoskopie)", type_office_cystoscopy:"Ambulante Zystoskopie", type_instillation:"Intravesikale Instillation", type_surgery:"Operation",
+tag_urine_test:"Urintest", tag_office_cystoscopy:"Zystoskopie", tag_instillation:"Instillation", tag_surgery:"Operation", tag_primary:"Diagnose",
+urineKindLabel:"Welche Art von Test?", urineResultLabel:"Ergebnis", urineRes_negative:"Negativ", urineRes_positive:"Positiv",
+recurrenceLabel:"Rezidiv?", recurrenceActionLabel:"Geplante Maßnahme",
+rec_biopsy:"Biopsie", rec_fulguration:"Fulguration", rec_surveillance:"Überwachung", rec_surgery_scheduled:"Operation geplant",
+cytologyLabel:"Zytologie entnommen?", parisLabel:"Paris-System-Kategorie (TPS 2.0)",
+paris_pending:"Ausstehend / noch nicht verfügbar",
+paris_nondiagnostic:"I. Nicht-diagnostisch / unzureichend", paris_negative:"II. Negativ für HGUC (inkl. niedriggradige urotheliale Neoplasie)",
+paris_atypical:"III. Atypische Urothelzellen", paris_suspicious:"IV. Verdächtig auf HGUC",
+paris_hguc:"V. High-grade Urothelkarzinom (HGUC)", paris_other:"VI. Andere Malignität (primär oder metastatisch)",
+instillationTypeLabel:"Art der Instillation", inst_chemo:"Chemotherapie", inst_bcg:"BCG",
+surgeryTypeLabel:"Art der Operation", surg_turb:"TURB", surg_cystoscopy_biopsy:"Zystoskopie mit Biopsie", surg_fulguration:"Fulguration",
+resultTStageLabel:"T-Stadium (Ergebnis)", resultGrade1Label:"Gradergebnis (WHO 1973)", resultGrade2Label:"Gradergebnis (WHO 2004/2016)",
+pending:"Ausstehend / noch nicht verfügbar",
+askDate:"Bitte Datum des Eintrags angeben.",
+historyTitle:"Verlauf", filterAll:"Alle", filterRecurrence:"Rezidive", timelineEmpty:"Keine Einträge in dieser Kategorie.",
+viewTable:"Tabelle", viewTimeline:"Zeitachse",
+colEvent:"Ereignis", colDate:"Datum", colDetails:"Details", colNotes:"Notizen", colActions:"Aktionen",
+deleteButton:"Löschen", confirmDelete:"Diesen Eintrag löschen?", completeButton:"Ergebnis ergänzen", saveButton:"Speichern", cancelButton:"Abbrechen", detailsButton:"Details", detailsTitle:"Details zum Ereignis", closeButton:"Schließen",
+pendingBadge:"Ergebnis ausstehend",
+pendingBannerText:n=>`${n} ${n===1?'Eintrag benötigt':'Einträge benötigen'} noch ein Ergebnis — hier tippen.`,
+statusTitle:"Aktueller Status",
+st_diagDate:"Datum der Erstdiagnose", st_risk:"Risikogruppe", st_recurrences:"Anzahl der Rezidive",
+st_lastRecurrence:"Datum des letzten Rezidivs", st_instillations:"Abgeschlossene Instillationsserien",
+st_lastCysto:"Datum der letzten Zystoskopie", st_none:"Noch nicht erfasst", st_noProfile:"Bitte zuerst Basisdaten ausfüllen.",
+scheduleTitle:"Empfohlener Nachsorgeplan", scheduleDisclaimer:"Allgemeine Orientierung nach EAU-Leitlinien — kein Ersatz für den Rat Ihres Arztes.",
+sched_low:"Zystoskopie nach 3 Monaten. Bei negativem Befund nächste Zystoskopie nach 9 Monaten, danach jährlich bis Jahr 5.",
+sched_intermediate:"Zystoskopie und Zytologie nach 3 Monaten, danach alle 3–6 Monate bis Jahr 3, alle 6–12 Monate bis Jahr 5, danach jährlich.",
+sched_high:"Zystoskopie und Zytologie alle 3 Monate für 2 Jahre, alle 4 Monate im 3. Jahr, alle 6 Monate bis Jahr 5, danach jährlich — Langzeitnachsorge empfohlen.",
+sched_very_high:"Wie bei hohem Risiko, häufig jedoch intensiverer, individualisierter Plan mit früherer Bildgebung des oberen Harntrakts.",
+sched_utuc:"In der Regel Zystoskopie und Urinzytologie (z. B. nach 3 Monaten, danach je nach Risikogruppe) sowie regelmäßige Bildgebung des oberen Harntrakts (CT-Urographie) — individuell mit Ihrem Urologen abzustimmen.",
+sched_needRisk:"Legen Sie eine Risikogruppe fest (oder füllen Sie die blasenspezifischen Daten aus), um einen Plan zu sehen.",
+printButton:"🖨 Drucken / als PDF speichern",
+attachmentsTitle:"Anhänge", attachEventLabel:"Mit Eintrag verknüpfen (optional)", attachNoneOption:"— keiner —",
+attachNoteLabel:"Beschreibung", attachAddButton:"Foto hinzufügen", attachStorageHint:"Fotos werden komprimiert und nur auf diesem Gerät gespeichert. Fügen Sie nur wenige hinzu, um Speicherplatz zu sparen.",
+attachEmpty:"Noch keine Anhänge.", attachDelete:"Löschen",
+aboutTitle:"Über diese App",
+aboutP1:"MyBlaCa ist ein dediziertes Tagebuch für Patienten mit Urothelkarzinom zur Speicherung wichtiger klinischer Informationen — kein Werkzeug für Behandlungsentscheidungen.",
+aboutP2:"Die endgültige Entscheidung trifft immer das qualifizierte medizinische Fachpersonal. Besprechen Sie Ergebnisse und Nachsorgeplan stets mit Ihrem Urologen.",
+aboutP3:"Alle Daten werden ausschließlich auf diesem mobilen Gerät gespeichert — nichts wird an die Cloud oder eine externe Datenbank gesendet.",
+aboutP4:"Um die App auf einem weiteren eigenen Gerät zu nutzen, exportieren Sie auf einem Gerät eine Sicherungsdatei und importieren Sie diese auf dem anderen. Es gibt keine automatische Cloud-Synchronisierung — Sie steuern die Übertragung selbst.",
+aboutP5:"Sie können jederzeit eine Sicherungskopie erstellen oder Ihre Daten über den Bildschirm „Aktueller Status“ drucken bzw. als PDF speichern.",
+exportButton:"⬇ Sicherung exportieren (Datei)", importButton:"⬆ Sicherung laden",
+importConfirm:"Dadurch werden die aktuellen App-Daten durch die Daten der Sicherungsdatei ersetzt. Fortfahren?",
+importSuccess:"Daten wurden geladen.", importError:"Datei konnte nicht geladen werden — prüfen Sie, ob es eine gültige Sicherungsdatei ist.",
+footerNote:"Diese App verbindet sich nicht mit dem Internet und sendet keine Daten — alles bleibt auf Ihrem Gerät.",
+demoBannerText:"DEMO — Beispieldaten, nichts hier wird dauerhaft gespeichert", demoResetLabel:"Demo zurücksetzen", demoExitLabel:"Demo verlassen", demoResetConfirm:"Demo auf die ursprünglichen Beispieldaten zurücksetzen? Ihre Änderungen hier gehen verloren.",
+});
+
+I18N.fr = Object.assign({}, I18N.en, {
+appTitle:"MyBlaCa", appSubtitle:"Carnet personnel de suivi du carcinome urothélial",
+tab_profile:"Données initiales", tab_add:"Ajouter", tab_history:"Historique", tab_status:"Statut actuel", tab_attachments:"Pièces jointes", tab_about:"À propos",
+profileTitle:"Données initiales",
+birthDateLabel:"Date de naissance", sexLabel:"Sexe", sex_male:"Homme", sex_female:"Femme",
+diagDateLabel:"Date du diagnostic (première intervention)", locationLabel:"Localisation de la tumeur primaire",
+loc_renal_pelvis:"Bassinet rénal", loc_ureter:"Uretère", loc_bladder:"Vessie", loc_prostatic_urethra:"Urètre prostatique",
+tStageLabel:"Stade T", t_t0:"pT0 (pas de tumeur résiduelle)", t_ta:"Ta", t_t1m:"T1m", t_t1e:"T1e", t_tis:"Tis", t_t2:"T2 (envahissant le muscle)", t_t1:"T1", t_t3:"T3", t_t4:"T4",
+grade1Label:"Grade (OMS 1973)", g1_g1:"G1", g1_g2:"G2", g1_g3:"G3",
+grade2Label:"Grade (OMS 2004/2016)", g2_lg:"Bas grade (LG)", g2_hg:"Haut grade (HG)",
+gradeHint:"Au moins un système de gradation doit être renseigné.",
+cisLabel:"CIS associé", singleDoseLabel:"Instillation postopératoire immédiate en dose unique",
+yes:"Oui", no:"Non", selectPlaceholder:"— choisir —", notApplicable:"N/A",
+bladderSectionTitle:"Données spécifiques à la vessie",
+diameterLabel:"Diamètre de la tumeur", dia_lt3:"Moins de 3 cm", dia_ge3:"3 cm ou plus",
+multiplicityLabel:"Unique / multiple", mult_single:"Unique", mult_multiple:"Multiple",
+reTURBLabel:"RTUV de second look réalisée ?", reTURBDateLabel:"Date de la reTURB",
+riskGroupLabel:"Groupe de risque", risk_low:"Faible", risk_intermediate:"Intermédiaire", risk_high:"Élevé", risk_very_high:"Très élevé",
+utucSectionTitle:"Bassinet / uretère — données spécifiques",
+sideLabel:"Côté", side_left:"Gauche", side_right:"Droit",
+neoadjLabel:"Traitement néoadjuvant", neoadjTypeLabel:"Lequel ?",
+lnLabel:"Curage ganglionnaire réalisé ?", nStageLabel:"Stade N",
+n_n0:"N0", n_n1:"N1", n_n2:"N2", n_n3:"N3", n_nx:"Nx",
+adjLabel:"Traitement adjuvant", adjTypeLabel:"Lequel ?",
+notesLabel:"Notes", saveProfile:"Enregistrer les données initiales", profileSavedNeedGrade:"Veuillez renseigner au moins un système de gradation (OMS 1973 ou OMS 2004/2016).",
+addEventTitle:"Ajouter un événement", eventTypeLabel:"Type d'événement", eventDateLabel:"Date", addEventButton:"Ajouter au carnet",
+type_urine_test:"Analyse d'urine (sans cystoscopie)", type_office_cystoscopy:"Cystoscopie en consultation", type_instillation:"Instillation endovésicale", type_surgery:"Intervention chirurgicale",
+tag_urine_test:"Analyse d'urine", tag_office_cystoscopy:"Cystoscopie", tag_instillation:"Instillation", tag_surgery:"Chirurgie", tag_primary:"Diagnostic",
+urineKindLabel:"Quel type d'analyse ?", urineResultLabel:"Résultat", urineRes_negative:"Négatif", urineRes_positive:"Positif",
+recurrenceLabel:"Récidive ?", recurrenceActionLabel:"Action prévue",
+rec_biopsy:"Biopsie", rec_fulguration:"Fulguration", rec_surveillance:"Surveillance", rec_surgery_scheduled:"Intervention programmée",
+cytologyLabel:"Cytologie réalisée ?", parisLabel:"Catégorie du système de Paris (TPS 2.0)",
+paris_pending:"En attente / non disponible",
+paris_nondiagnostic:"I. Non contributif / insatisfaisant", paris_negative:"II. Négatif pour HGUC (incl. néoplasie urothéliale de bas grade)",
+paris_atypical:"III. Cellules urothéliales atypiques", paris_suspicious:"IV. Suspect de HGUC",
+paris_hguc:"V. Carcinome urothélial de haut grade (HGUC)", paris_other:"VI. Autre tumeur maligne (primitive ou métastatique)",
+instillationTypeLabel:"Type d'instillation", inst_chemo:"Chimiothérapie", inst_bcg:"BCG",
+surgeryTypeLabel:"Type d'intervention", surg_turb:"RTUV", surg_cystoscopy_biopsy:"Cystoscopie avec biopsie", surg_fulguration:"Fulguration",
+resultTStageLabel:"Stade T (résultat)", resultGrade1Label:"Résultat grade (OMS 1973)", resultGrade2Label:"Résultat grade (OMS 2004/2016)",
+pending:"En attente / non disponible",
+askDate:"Veuillez indiquer la date de l'événement.",
+historyTitle:"Historique", filterAll:"Tout", filterRecurrence:"Récidives", timelineEmpty:"Aucune entrée dans cette catégorie.",
+viewTable:"Tableau", viewTimeline:"Chronologie",
+colEvent:"Événement", colDate:"Date", colDetails:"Détails", colNotes:"Notes", colActions:"Actions",
+deleteButton:"Supprimer", confirmDelete:"Supprimer cette entrée ?", completeButton:"Compléter le résultat", saveButton:"Enregistrer", cancelButton:"Annuler", detailsButton:"Détails", detailsTitle:"Détails de l'événement", closeButton:"Fermer",
+pendingBadge:"Résultat en attente",
+pendingBannerText:n=>`${n} ${n===1?'entrée nécessite':'entrées nécessitent'} un résultat à compléter — appuyez ici.`,
+statusTitle:"Statut actuel",
+st_diagDate:"Date du premier diagnostic", st_risk:"Groupe de risque", st_recurrences:"Nombre de récidives",
+st_lastRecurrence:"Date de la dernière récidive", st_instillations:"Séries d'instillations réalisées",
+st_lastCysto:"Date de la dernière cystoscopie", st_none:"Aucune donnée pour l'instant", st_noProfile:"Veuillez d'abord renseigner les données initiales.",
+scheduleTitle:"Calendrier de surveillance recommandé", scheduleDisclaimer:"Orientation générale basée sur les recommandations EAU — ne remplace pas l'avis de votre médecin.",
+sched_low:"Cystoscopie à 3 mois. Si négative, prochaine cystoscopie à 9 mois, puis annuelle jusqu'à l'année 5.",
+sched_intermediate:"Cystoscopie et cytologie à 3 mois, puis tous les 3 à 6 mois jusqu'à l'année 3, tous les 6 à 12 mois jusqu'à l'année 5, puis annuelle.",
+sched_high:"Cystoscopie et cytologie tous les 3 mois pendant 2 ans, tous les 4 mois la 3e année, tous les 6 mois jusqu'à l'année 5, puis annuelle — suivi au long cours recommandé.",
+sched_very_high:"Comme pour le risque élevé, mais un schéma plus intensif et individualisé est souvent utilisé, avec imagerie du haut appareil plus précoce.",
+sched_utuc:"Généralement cystoscopie et cytologie urinaire (par ex. à 3 mois, puis selon le groupe de risque) ainsi qu'une imagerie périodique du haut appareil (uro-scanner) — à individualiser avec votre urologue.",
+sched_needRisk:"Définissez un groupe de risque (ou complétez les données vésicales) pour afficher un calendrier.",
+printButton:"🖨 Imprimer / enregistrer en PDF",
+attachmentsTitle:"Pièces jointes", attachEventLabel:"Lier à un événement (facultatif)", attachNoneOption:"— aucun —",
+attachNoteLabel:"Description", attachAddButton:"Ajouter une photo", attachStorageHint:"Les photos sont compressées et stockées uniquement sur cet appareil. N'en ajoutez qu'un nombre limité pour économiser l'espace.",
+attachEmpty:"Aucune pièce jointe pour l'instant.", attachDelete:"Supprimer",
+aboutTitle:"À propos de cette application",
+aboutP1:"MyBlaCa est un carnet dédié aux patients atteints de carcinome urothélial, destiné à stocker des informations cliniques importantes — ce n'est pas un outil d'aide à la décision thérapeutique.",
+aboutP2:"La décision finale appartient toujours au personnel médical qualifié. Discutez toujours de vos résultats et de votre plan de suivi avec votre urologue.",
+aboutP3:"Toutes les données sont stockées uniquement sur cet appareil mobile — rien n'est envoyé vers le cloud ni vers une base de données externe.",
+aboutP4:"Pour utiliser l'application sur un autre de vos appareils, exportez un fichier de sauvegarde sur un appareil puis importez-le sur l'autre. Il n'y a pas de synchronisation cloud automatique — vous contrôlez vous-même le transfert.",
+aboutP5:"Vous pouvez faire une sauvegarde à tout moment, ou imprimer/enregistrer vos données en PDF depuis l'écran « Statut actuel ».",
+exportButton:"⬇ Exporter la sauvegarde (fichier)", importButton:"⬆ Charger une sauvegarde",
+importConfirm:"Cela remplacera les données actuelles de l'application par celles du fichier de sauvegarde. Continuer ?",
+importSuccess:"Les données ont été chargées.", importError:"Impossible de charger le fichier — vérifiez qu'il s'agit d'un fichier de sauvegarde valide.",
+footerNote:"Cette application ne se connecte pas à internet et n'envoie aucune donnée — tout reste sur votre appareil.",
+demoBannerText:"DÉMO — données fictives, rien n'est enregistré ici de façon permanente", demoResetLabel:"Réinitialiser la démo", demoExitLabel:"Quitter la démo", demoResetConfirm:"Réinitialiser la démo avec les données d'exemple d'origine ? Vos modifications seront perdues.",
+});
+
+I18N.es = Object.assign({}, I18N.en, {
+appTitle:"MyBlaCa", appSubtitle:"Cuaderno personal de seguimiento del carcinoma urotelial",
+tab_profile:"Datos iniciales", tab_add:"Añadir evento", tab_history:"Historial", tab_status:"Estado actual", tab_attachments:"Adjuntos", tab_about:"Acerca de",
+profileTitle:"Datos iniciales",
+birthDateLabel:"Fecha de nacimiento", sexLabel:"Sexo", sex_male:"Hombre", sex_female:"Mujer",
+diagDateLabel:"Fecha del diagnóstico (primera cirugía)", locationLabel:"Localización del tumor primario",
+loc_renal_pelvis:"Pelvis renal", loc_ureter:"Uréter", loc_bladder:"Vejiga", loc_prostatic_urethra:"Uretra prostática",
+tStageLabel:"Estadio T", t_t0:"pT0 (sin tumor residual)", t_ta:"Ta", t_t1m:"T1m", t_t1e:"T1e", t_tis:"Tis", t_t2:"T2 (invasión muscular)", t_t1:"T1", t_t3:"T3", t_t4:"T4",
+grade1Label:"Grado (OMS 1973)", g1_g1:"G1", g1_g2:"G2", g1_g3:"G3",
+grade2Label:"Grado (OMS 2004/2016)", g2_lg:"Bajo grado (LG)", g2_hg:"Alto grado (HG)",
+gradeHint:"Debe indicarse al menos un sistema de gradación.",
+cisLabel:"CIS concomitante", singleDoseLabel:"Instilación posquirúrgica en dosis única",
+yes:"Sí", no:"No", selectPlaceholder:"— seleccionar —", notApplicable:"N/A",
+bladderSectionTitle:"Datos específicos de vejiga",
+diameterLabel:"Diámetro del tumor", dia_lt3:"Menos de 3 cm", dia_ge3:"3 cm o más",
+multiplicityLabel:"Único / múltiple", mult_single:"Único", mult_multiple:"Múltiple",
+reTURBLabel:"¿Se realizó reTURB?", reTURBDateLabel:"Fecha de reTURB",
+riskGroupLabel:"Grupo de riesgo", risk_low:"Bajo", risk_intermediate:"Intermedio", risk_high:"Alto", risk_very_high:"Muy alto",
+utucSectionTitle:"Pelvis renal / uréter — datos específicos",
+sideLabel:"Lado", side_left:"Izquierdo", side_right:"Derecho",
+neoadjLabel:"Tratamiento neoadyuvante", neoadjTypeLabel:"¿De qué tipo?",
+lnLabel:"¿Se realizó linfadenectomía?", nStageLabel:"Estadio N",
+n_n0:"N0", n_n1:"N1", n_n2:"N2", n_n3:"N3", n_nx:"Nx",
+adjLabel:"Tratamiento adyuvante", adjTypeLabel:"¿De qué tipo?",
+notesLabel:"Notas", saveProfile:"Guardar datos iniciales", profileSavedNeedGrade:"Indique al menos un sistema de gradación (OMS 1973 u OMS 2004/2016).",
+addEventTitle:"Añadir evento", eventTypeLabel:"Tipo de evento", eventDateLabel:"Fecha", addEventButton:"Añadir al cuaderno",
+type_urine_test:"Análisis de orina (sin cistoscopia)", type_office_cystoscopy:"Cistoscopia ambulatoria", type_instillation:"Instilación endovesical", type_surgery:"Cirugía",
+tag_urine_test:"Análisis de orina", tag_office_cystoscopy:"Cistoscopia", tag_instillation:"Instilación", tag_surgery:"Cirugía", tag_primary:"Diagnóstico",
+urineKindLabel:"¿Qué tipo de análisis?", urineResultLabel:"Resultado", urineRes_negative:"Negativo", urineRes_positive:"Positivo",
+recurrenceLabel:"¿Recidiva?", recurrenceActionLabel:"Acción planificada",
+rec_biopsy:"Biopsia", rec_fulguration:"Fulguración", rec_surveillance:"Vigilancia", rec_surgery_scheduled:"Cirugía programada",
+cytologyLabel:"¿Se tomó citología?", parisLabel:"Categoría del sistema de París (TPS 2.0)",
+paris_pending:"Pendiente / no disponible aún",
+paris_nondiagnostic:"I. No diagnóstico / insatisfactorio", paris_negative:"II. Negativo para HGUC (incl. neoplasia urotelial de bajo grado)",
+paris_atypical:"III. Células uroteliales atípicas", paris_suspicious:"IV. Sospechoso de HGUC",
+paris_hguc:"V. Carcinoma urotelial de alto grado (HGUC)", paris_other:"VI. Otra neoplasia maligna (primaria o metastásica)",
+instillationTypeLabel:"Tipo de instilación", inst_chemo:"Quimioterapia", inst_bcg:"BCG",
+surgeryTypeLabel:"Tipo de cirugía", surg_turb:"RTUv", surg_cystoscopy_biopsy:"Cistoscopia con biopsia", surg_fulguration:"Fulguración",
+resultTStageLabel:"Estadio T (resultado)", resultGrade1Label:"Resultado de grado (OMS 1973)", resultGrade2Label:"Resultado de grado (OMS 2004/2016)",
+pending:"Pendiente / no disponible aún",
+askDate:"Introduzca la fecha del evento.",
+historyTitle:"Historial", filterAll:"Todo", filterRecurrence:"Recidivas", timelineEmpty:"No hay entradas en esta categoría.",
+viewTable:"Tabla", viewTimeline:"Cronología",
+colEvent:"Evento", colDate:"Fecha", colDetails:"Detalles", colNotes:"Notas", colActions:"Acciones",
+deleteButton:"Eliminar", confirmDelete:"¿Eliminar esta entrada?", completeButton:"Completar resultado", saveButton:"Guardar", cancelButton:"Cancelar", detailsButton:"Detalles", detailsTitle:"Detalles del evento", closeButton:"Cerrar",
+pendingBadge:"Resultado pendiente",
+pendingBannerText:n=>`${n} ${n===1?'entrada necesita':'entradas necesitan'} completar un resultado — toque aquí.`,
+statusTitle:"Estado actual",
+st_diagDate:"Fecha del primer diagnóstico", st_risk:"Grupo de riesgo", st_recurrences:"Número de recidivas",
+st_lastRecurrence:"Fecha de la última recidiva", st_instillations:"Series de instilaciones completadas",
+st_lastCysto:"Fecha de la última cistoscopia", st_none:"Aún no hay datos", st_noProfile:"Primero complete los datos iniciales.",
+scheduleTitle:"Calendario de seguimiento recomendado", scheduleDisclaimer:"Orientación general basada en las guías EAU — no sustituye el consejo de su médico.",
+sched_low:"Cistoscopia a los 3 meses. Si es negativa, siguiente cistoscopia a los 9 meses, luego anual hasta el año 5.",
+sched_intermediate:"Cistoscopia y citología a los 3 meses, luego cada 3–6 meses hasta el año 3, cada 6–12 meses hasta el año 5, luego anual.",
+sched_high:"Cistoscopia y citología cada 3 meses durante 2 años, cada 4 meses en el año 3, cada 6 meses hasta el año 5, luego anual — se recomienda seguimiento a largo plazo.",
+sched_very_high:"Como en el riesgo alto, aunque suele emplearse un esquema más intensivo e individualizado, con imagen de vía urinaria superior más temprana.",
+sched_utuc:"Habitualmente cistoscopia y citología urinaria (p. ej. a los 3 meses, luego según el grupo de riesgo) además de imagen periódica de la vía urinaria superior (uro-TC) — a individualizar con su urólogo.",
+sched_needRisk:"Defina un grupo de riesgo (o complete los datos de vejiga) para ver un calendario.",
+printButton:"🖨 Imprimir / guardar como PDF",
+attachmentsTitle:"Adjuntos", attachEventLabel:"Vincular a un evento (opcional)", attachNoneOption:"— ninguno —",
+attachNoteLabel:"Descripción", attachAddButton:"Añadir foto", attachStorageHint:"Las fotos se comprimen y se guardan solo en este dispositivo. Añada solo unas pocas para ahorrar espacio.",
+attachEmpty:"Aún no hay adjuntos.", attachDelete:"Eliminar",
+aboutTitle:"Acerca de esta aplicación",
+aboutP1:"MyBlaCa es un cuaderno dedicado a pacientes con carcinoma urotelial para guardar información clínica importante — no es una herramienta para tomar decisiones de tratamiento.",
+aboutP2:"La decisión final siempre la toma el personal médico cualificado. Comente siempre sus resultados y su plan de seguimiento con su urólogo.",
+aboutP3:"Todos los datos se almacenan únicamente en este dispositivo móvil — nada se envía a la nube ni a ninguna base de datos externa.",
+aboutP4:"Para usar la app en otro dispositivo propio, exporte un archivo de copia de seguridad en un dispositivo e impórtelo en el otro. No hay sincronización automática en la nube — usted controla la transferencia.",
+aboutP5:"Puede hacer una copia de seguridad en cualquier momento, o imprimir/guardar sus datos en PDF desde la pantalla de Estado actual.",
+exportButton:"⬇ Exportar copia (archivo)", importButton:"⬆ Cargar copia",
+importConfirm:"Esto reemplazará los datos actuales de la app con los del archivo de copia de seguridad. ¿Continuar?",
+importSuccess:"Los datos se han cargado.", importError:"No se pudo cargar el archivo — compruebe que sea un archivo de copia de seguridad válido.",
+footerNote:"Esta aplicación no se conecta a internet ni envía ningún dato — todo permanece en su dispositivo.",
+demoBannerText:"DEMO — datos de ejemplo, nada de esto se guarda de forma permanente", demoResetLabel:"Reiniciar demo", demoExitLabel:"Salir de la demo", demoResetConfirm:"¿Restablecer la demo a sus datos de ejemplo originales? Se perderán los cambios realizados aquí.",
+});
+
+I18N.sv = Object.assign({}, I18N.en, {
+appTitle:"MyBlaCa", appSubtitle:"Personlig dagbok för uppföljning av urotelial cancer",
+tab_profile:"Grunddata", tab_add:"Lägg till händelse", tab_history:"Historik", tab_status:"Aktuell status", tab_attachments:"Bilagor", tab_about:"Om",
+profileTitle:"Grunddata",
+birthDateLabel:"Födelsedatum", sexLabel:"Kön", sex_male:"Man", sex_female:"Kvinna",
+diagDateLabel:"Diagnosdatum (första operationen)", locationLabel:"Primär tumörlokalisation",
+loc_renal_pelvis:"Njurbäcken", loc_ureter:"Urinledare", loc_bladder:"Urinblåsa", loc_prostatic_urethra:"Prostatisk urinrör",
+tStageLabel:"T-stadium", t_t0:"pT0 (ingen kvarvarande tumör)", t_ta:"Ta", t_t1m:"T1m", t_t1e:"T1e", t_tis:"Tis", t_t2:"T2 (muskelinvasiv)", t_t1:"T1", t_t3:"T3", t_t4:"T4",
+grade1Label:"Grad (WHO 1973)", g1_g1:"G1", g1_g2:"G2", g1_g3:"G3",
+grade2Label:"Grad (WHO 2004/2016)", g2_lg:"Låg grad (LG)", g2_hg:"Hög grad (HG)",
+gradeHint:"Minst ett gradsystem måste anges.",
+cisLabel:"Samtidig CIS", singleDoseLabel:"Engångsdos postoperativ intravesikal instillation",
+yes:"Ja", no:"Nej", selectPlaceholder:"— välj —", notApplicable:"Ej tillämpligt",
+bladderSectionTitle:"Blåsspecifika data",
+diameterLabel:"Tumördiameter", dia_lt3:"Mindre än 3 cm", dia_ge3:"3 cm eller mer",
+multiplicityLabel:"Solitär / multipel", mult_single:"Solitär", mult_multiple:"Multipel",
+reTURBLabel:"Re-TURB utförd?", reTURBDateLabel:"Datum för re-TURB",
+riskGroupLabel:"Riskgrupp", risk_low:"Låg", risk_intermediate:"Medel", risk_high:"Hög", risk_very_high:"Mycket hög",
+utucSectionTitle:"Njurbäcken / urinledare — specifika data",
+sideLabel:"Sida", side_left:"Vänster", side_right:"Höger",
+neoadjLabel:"Neoadjuvant behandling", neoadjTypeLabel:"Vilken typ?",
+lnLabel:"Lymfkörtelutrymning utförd?", nStageLabel:"N-stadium",
+n_n0:"N0", n_n1:"N1", n_n2:"N2", n_n3:"N3", n_nx:"Nx",
+adjLabel:"Adjuvant behandling", adjTypeLabel:"Vilken typ?",
+notesLabel:"Anteckningar", saveProfile:"Spara grunddata", profileSavedNeedGrade:"Ange minst ett gradsystem (WHO 1973 eller WHO 2004/2016).",
+addEventTitle:"Lägg till händelse", eventTypeLabel:"Typ av händelse", eventDateLabel:"Datum", addEventButton:"Lägg till i dagboken",
+type_urine_test:"Urinprov (utan cystoskopi)", type_office_cystoscopy:"Mottagningscystoskopi", type_instillation:"Intravesikal instillation", type_surgery:"Operation",
+tag_urine_test:"Urinprov", tag_office_cystoscopy:"Cystoskopi", tag_instillation:"Instillation", tag_surgery:"Operation", tag_primary:"Diagnos",
+urineKindLabel:"Vilken typ av prov?", urineResultLabel:"Resultat", urineRes_negative:"Negativt", urineRes_positive:"Positivt",
+recurrenceLabel:"Återfall?", recurrenceActionLabel:"Planerad åtgärd",
+rec_biopsy:"Biopsi", rec_fulguration:"Fulguration", rec_surveillance:"Övervakning", rec_surgery_scheduled:"Operation planerad",
+cytologyLabel:"Cytologi tagen?", parisLabel:"Paris-systemets kategori (TPS 2.0)",
+paris_pending:"Väntar / inte tillgänglig än",
+paris_nondiagnostic:"I. Icke-diagnostiskt / otillräckligt", paris_negative:"II. Negativ för HGUC (inkl. låggradig urotelial neoplasi)",
+paris_atypical:"III. Atypiska urotelceller", paris_suspicious:"IV. Misstänkt HGUC",
+paris_hguc:"V. Höggradigt urotelialt karcinom (HGUC)", paris_other:"VI. Annan malignitet (primär eller metastaserad)",
+instillationTypeLabel:"Typ av instillation", inst_chemo:"Cellgiftsbehandling", inst_bcg:"BCG",
+surgeryTypeLabel:"Typ av operation", surg_turb:"TURB", surg_cystoscopy_biopsy:"Cystoskopi med biopsi", surg_fulguration:"Fulguration",
+resultTStageLabel:"T-stadium (resultat)", resultGrade1Label:"Gradresultat (WHO 1973)", resultGrade2Label:"Gradresultat (WHO 2004/2016)",
+pending:"Väntar / inte tillgänglig än",
+askDate:"Ange datum för händelsen.",
+historyTitle:"Historik", filterAll:"Alla", filterRecurrence:"Återfall", timelineEmpty:"Inga poster i den här kategorin.",
+viewTable:"Tabell", viewTimeline:"Tidslinje",
+colEvent:"Händelse", colDate:"Datum", colDetails:"Detaljer", colNotes:"Anteckningar", colActions:"Åtgärder",
+deleteButton:"Ta bort", confirmDelete:"Ta bort den här posten?", completeButton:"Komplettera resultat", saveButton:"Spara", cancelButton:"Avbryt", detailsButton:"Detaljer", detailsTitle:"Händelsedetaljer", closeButton:"Stäng",
+pendingBadge:"Resultat väntar",
+pendingBannerText:n=>`${n} ${n===1?'post behöver':'poster behöver'} ett resultat kompletteras — tryck här.`,
+statusTitle:"Aktuell status",
+st_diagDate:"Datum för första diagnos", st_risk:"Riskgrupp", st_recurrences:"Antal återfall",
+st_lastRecurrence:"Datum för senaste återfall", st_instillations:"Genomförda instillationsserier",
+st_lastCysto:"Datum för senaste cystoskopi", st_none:"Inget registrerat än", st_noProfile:"Fyll först i grunddata.",
+scheduleTitle:"Rekommenderat uppföljningsschema", scheduleDisclaimer:"Allmän vägledning baserad på EAU:s riktlinjer — ersätter inte din läkares rekommendation.",
+sched_low:"Cystoskopi efter 3 månader. Om negativ, nästa cystoskopi efter 9 månader, sedan årligen till år 5.",
+sched_intermediate:"Cystoskopi och cytologi efter 3 månader, sedan var 3–6:e månad till år 3, var 6–12:e månad till år 5, sedan årligen.",
+sched_high:"Cystoskopi och cytologi var 3:e månad i 2 år, var 4:e månad år 3, var 6:e månad till år 5, sedan årligen — långtidsuppföljning rekommenderas.",
+sched_very_high:"Som vid hög risk, men ett mer intensivt, individualiserat schema används ofta, med tidigare bilddiagnostik av övre urinvägarna.",
+sched_utuc:"Vanligen cystoskopi och urincytologi (t.ex. efter 3 månader, sedan enligt riskgrupp) samt regelbunden bilddiagnostik av övre urinvägarna (CT-urografi) — individualiseras med din urolog.",
+sched_needRisk:"Ange en riskgrupp (eller fyll i blåsspecifika data) för att se ett schema.",
+printButton:"🖨 Skriv ut / spara som PDF",
+attachmentsTitle:"Bilagor", attachEventLabel:"Koppla till händelse (valfritt)", attachNoneOption:"— ingen —",
+attachNoteLabel:"Beskrivning", attachAddButton:"Lägg till foto", attachStorageHint:"Foton komprimeras och sparas endast på den här enheten. Lägg till ett begränsat antal för att spara lagringsutrymme.",
+attachEmpty:"Inga bilagor än.", attachDelete:"Ta bort",
+aboutTitle:"Om den här appen",
+aboutP1:"MyBlaCa är en dedikerad dagbok för patienter med urotelial cancer, för att spara viktig klinisk information — det är inte ett verktyg för att fatta behandlingsbeslut.",
+aboutP2:"Det slutliga beslutet fattas alltid av kvalificerad sjukvårdspersonal. Diskutera alltid dina resultat och din uppföljningsplan med din urolog.",
+aboutP3:"All data lagras endast på den här mobila enheten — inget skickas till molnet eller till någon extern databas.",
+aboutP4:"För att använda appen på en annan av dina egna enheter exporterar du en säkerhetskopia på en enhet och importerar den på den andra. Det finns ingen automatisk molnsynkronisering — du styr överföringen själv.",
+aboutP5:"Du kan när som helst göra en säkerhetskopia, eller skriva ut/spara dina data som PDF från skärmen Aktuell status.",
+exportButton:"⬇ Exportera säkerhetskopia (fil)", importButton:"⬆ Läs in säkerhetskopia",
+importConfirm:"Detta ersätter den aktuella datan i appen med datan från säkerhetskopian. Fortsätta?",
+importSuccess:"Datan har lästs in.", importError:"Kunde inte läsa in filen — kontrollera att det är en giltig säkerhetskopia.",
+footerNote:"Den här appen ansluter inte till internet och skickar ingen data — allt stannar på din enhet.",
+demoBannerText:"DEMO — exempeldata, inget här sparas permanent", demoResetLabel:"Återställ demo", demoExitLabel:"Avsluta demo", demoResetConfirm:"Återställa demot till ursprungliga exempeldata? Dina ändringar här går förlorade.",
+});
+
+I18N.pl = Object.assign({}, I18N.en, {
+appTitle:"MyBlaCa", appSubtitle:"Osobisty notatnik dla pacjentów z rakiem urotelialnym",
+tab_profile:"Dane podstawowe", tab_add:"Dodaj wpis", tab_history:"Historia", tab_status:"Aktualny status", tab_attachments:"Załączniki", tab_about:"O aplikacji",
+profileTitle:"Dane podstawowe",
+birthDateLabel:"Data urodzenia", sexLabel:"Płeć", sex_male:"Mężczyzna", sex_female:"Kobieta",
+diagDateLabel:"Data rozpoznania (pierwszy zabieg)", locationLabel:"Lokalizacja guza pierwotnego",
+loc_renal_pelvis:"Miedniczka nerkowa", loc_ureter:"Moczowód", loc_bladder:"Pęcherz moczowy", loc_prostatic_urethra:"Cewka moczowa sterczowa",
+tStageLabel:"Stadium T", t_t0:"pT0 (brak resztkowego guza)", t_ta:"Ta", t_t1m:"T1m", t_t1e:"T1e", t_tis:"Tis", t_t2:"T2 (naciek mięśnia)", t_t1:"T1", t_t3:"T3", t_t4:"T4",
+grade1Label:"Grade (WHO 1973)", g1_g1:"G1", g1_g2:"G2", g1_g3:"G3",
+grade2Label:"Grade (WHO 2004/2016)", g2_lg:"Low grade (LG)", g2_hg:"High grade (HG)",
+gradeHint:"Należy podać co najmniej jeden system oceny stopnia złośliwości.",
+cisLabel:"Współistniejące CIS", singleDoseLabel:"Jednorazowa pooperacyjna wlewka dopęcherzowa",
+yes:"Tak", no:"Nie", selectPlaceholder:"— wybierz —", notApplicable:"Nie dotyczy",
+bladderSectionTitle:"Dane specyficzne dla pęcherza",
+diameterLabel:"Średnica guza", dia_lt3:"Poniżej 3 cm", dia_ge3:"3 cm lub więcej",
+multiplicityLabel:"Pojedynczy / mnogi", mult_single:"Pojedynczy", mult_multiple:"Mnogi",
+reTURBLabel:"Czy wykonano reTURB?", reTURBDateLabel:"Data reTURB",
+riskGroupLabel:"Grupa ryzyka", risk_low:"Niskie", risk_intermediate:"Pośrednie", risk_high:"Wysokie", risk_very_high:"Bardzo wysokie",
+utucSectionTitle:"Miedniczka nerkowa / moczowód — dane specyficzne",
+sideLabel:"Strona", side_left:"Lewa", side_right:"Prawa",
+neoadjLabel:"Leczenie neoadjuwantowe", neoadjTypeLabel:"Jakie?",
+lnLabel:"Czy wykonano limfadenektomię?", nStageLabel:"Stadium N",
+n_n0:"N0", n_n1:"N1", n_n2:"N2", n_n3:"N3", n_nx:"Nx",
+adjLabel:"Leczenie adjuwantowe", adjTypeLabel:"Jakie?",
+notesLabel:"Notatki", saveProfile:"Zapisz dane podstawowe", profileSavedNeedGrade:"Podaj co najmniej jeden system oceny stopnia złośliwości (WHO 1973 lub WHO 2004/2016).",
+addEventTitle:"Dodaj wpis", eventTypeLabel:"Rodzaj wpisu", eventDateLabel:"Data", addEventButton:"Dodaj do dziennika",
+type_urine_test:"Badanie moczu (bez cystoskopii)", type_office_cystoscopy:"Cystoskopia ambulatoryjna", type_instillation:"Wlewka dopęcherzowa", type_surgery:"Zabieg",
+tag_urine_test:"Badanie moczu", tag_office_cystoscopy:"Cystoskopia", tag_instillation:"Wlewka", tag_surgery:"Zabieg", tag_primary:"Rozpoznanie",
+urineKindLabel:"Jaki rodzaj badania?", urineResultLabel:"Wynik", urineRes_negative:"Negatywny", urineRes_positive:"Pozytywny",
+recurrenceLabel:"Wznowa?", recurrenceActionLabel:"Planowane działanie",
+rec_biopsy:"Biopsja", rec_fulguration:"Fulguracja", rec_surveillance:"Obserwacja", rec_surgery_scheduled:"Zaplanowany zabieg",
+cytologyLabel:"Czy pobrano cytologię?", parisLabel:"Kategoria systemu paryskiego (TPS 2.0)",
+paris_pending:"Oczekuje / brak wyniku",
+paris_nondiagnostic:"I. Niediagnostyczny / niesatysfakcjonujący", paris_negative:"II. Negatywny dla HGUC (w tym nowotwór urotelialny niskiego stopnia)",
+paris_atypical:"III. Atypowe komórki urotelialne", paris_suspicious:"IV. Podejrzany o HGUC",
+paris_hguc:"V. Rak urotelialny wysokiego stopnia (HGUC)", paris_other:"VI. Inny nowotwór złośliwy (pierwotny lub przerzutowy)",
+instillationTypeLabel:"Rodzaj wlewki", inst_chemo:"Chemioterapia", inst_bcg:"BCG",
+surgeryTypeLabel:"Rodzaj zabiegu", surg_turb:"TURB", surg_cystoscopy_biopsy:"Cystoskopia z biopsją", surg_fulguration:"Fulguracja",
+resultTStageLabel:"Stadium T (wynik)", resultGrade1Label:"Wynik grade (WHO 1973)", resultGrade2Label:"Wynik grade (WHO 2004/2016)",
+pending:"Oczekuje / brak wyniku",
+askDate:"Podaj datę wpisu.",
+historyTitle:"Historia", filterAll:"Wszystko", filterRecurrence:"Wznowy", timelineEmpty:"Brak wpisów w tej kategorii.",
+viewTable:"Tabela", viewTimeline:"Oś czasu",
+colEvent:"Wydarzenie", colDate:"Data", colDetails:"Szczegóły", colNotes:"Notatki", colActions:"Akcje",
+deleteButton:"Usuń", confirmDelete:"Usunąć ten wpis?", completeButton:"Uzupełnij wynik", saveButton:"Zapisz", cancelButton:"Anuluj", detailsButton:"Szczegóły", detailsTitle:"Szczegóły wydarzenia", closeButton:"Zamknij",
+pendingBadge:"Wynik oczekujący",
+pendingBannerText:n=>`${n} ${n===1?'wpis wymaga':'wpisy/wpisów wymagają'} uzupełnienia wyniku — dotknij tutaj.`,
+statusTitle:"Aktualny status",
+st_diagDate:"Data pierwszego rozpoznania", st_risk:"Grupa ryzyka", st_recurrences:"Liczba wznów",
+st_lastRecurrence:"Data ostatniej wznowy", st_instillations:"Zrealizowane serie wlewek",
+st_lastCysto:"Data ostatniej cystoskopii", st_none:"Brak danych", st_noProfile:"Najpierw uzupełnij dane podstawowe.",
+scheduleTitle:"Rekomendowany schemat kontroli", scheduleDisclaimer:"Ogólna orientacja na podstawie wytycznych EAU — nie zastępuje zaleceń Twojego lekarza.",
+sched_low:"Cystoskopia po 3 miesiącach. Jeśli wynik ujemny, kolejna cystoskopia po 9 miesiącach, następnie co roku do 5. roku.",
+sched_intermediate:"Cystoskopia i cytologia po 3 miesiącach, następnie co 3–6 miesięcy do 3. roku, co 6–12 miesięcy do 5. roku, następnie co roku.",
+sched_high:"Cystoskopia i cytologia co 3 miesiące przez 2 lata, co 4 miesiące w 3. roku, co 6 miesięcy do 5. roku, następnie co roku — zalecana wieloletnia kontrola.",
+sched_very_high:"Jak przy wysokim ryzyku, jednak często stosuje się bardziej intensywny, zindywidualizowany schemat z wcześniejszym obrazowaniem górnych dróg moczowych.",
+sched_utuc:"Zwykle cystoskopia i cytologia moczu (np. po 3 miesiącach, następnie wg grupy ryzyka) oraz okresowe obrazowanie górnych dróg moczowych (urografia TK) — do ustalenia indywidualnie z urologiem.",
+sched_needRisk:"Ustaw grupę ryzyka (lub uzupełnij dane specyficzne dla pęcherza), aby zobaczyć schemat kontroli.",
+printButton:"🖨 Drukuj / zapisz jako PDF",
+attachmentsTitle:"Załączniki", attachEventLabel:"Powiąż ze zdarzeniem (opcjonalnie)", attachNoneOption:"— brak —",
+attachNoteLabel:"Opis", attachAddButton:"Dodaj zdjęcie", attachStorageHint:"Zdjęcia są kompresowane i przechowywane wyłącznie na tym urządzeniu. Dodawaj ich niewiele, aby oszczędzać miejsce.",
+attachEmpty:"Brak załączników.", attachDelete:"Usuń",
+aboutTitle:"O aplikacji",
+aboutP1:"MyBlaCa to dedykowany notatnik dla pacjentów z rakiem urotelialnym, służący do przechowywania istotnych informacji klinicznych — to nie jest narzędzie do podejmowania decyzji terapeutycznych.",
+aboutP2:"Ostateczną decyzję zawsze podejmuje wykwalifikowany personel medyczny. Wyniki i plan kontroli zawsze omawiaj ze swoim urologiem.",
+aboutP3:"Wszystkie dane są przechowywane wyłącznie na tym urządzeniu mobilnym — nic nie jest wysyłane do chmury ani żadnej zewnętrznej bazy danych.",
+aboutP4:"Aby korzystać z aplikacji na innym swoim urządzeniu, wyeksportuj plik kopii zapasowej na jednym urządzeniu i wczytaj go na drugim. Nie ma automatycznej synchronizacji w chmurze — transfer danych kontrolujesz samodzielnie.",
+aboutP5:"W każdej chwili możesz zrobić kopię zapasową albo wydrukować/zapisać dane jako PDF z ekranu „Aktualny status”.",
+exportButton:"⬇ Eksportuj kopię (plik)", importButton:"⬆ Wczytaj kopię",
+importConfirm:"To zastąpi obecne dane w aplikacji danymi z pliku kopii zapasowej. Kontynuować?",
+importSuccess:"Dane zostały wczytane.", importError:"Nie udało się wczytać pliku — sprawdź, czy to poprawny plik kopii zapasowej.",
+footerNote:"Ta aplikacja nie łączy się z internetem ani nie wysyła żadnych danych — wszystko zostaje na Twoim urządzeniu.",
+demoBannerText:"DEMO — dane przykładowe, nic tu nie jest zapisywane na stałe", demoResetLabel:"Zresetuj demo", demoExitLabel:"Wyjdź z demo", demoResetConfirm:"Zresetować demo do oryginalnych danych przykładowych? Twoje zmiany tutaj zostaną utracone.",
+});
+
+const SUPPORTED_LANGS = ['en','de','fr','es','sv','pl'];
+const STORAGE_LANG_KEY = 'myblaca_lang';
+
+function detectLang(){
+  const saved = localStorage.getItem(STORAGE_LANG_KEY);
+  if(saved && SUPPORTED_LANGS.includes(saved)) return saved;
+  const browserLangs = navigator.languages || [navigator.language || 'en'];
+  for(const bl of browserLangs){
+    const code = bl.slice(0,2).toLowerCase();
+    if(SUPPORTED_LANGS.includes(code)) return code;
+  }
+  return 'en';
+}
+let currentLang = detectLang();
+function t(key){ return (I18N[currentLang] && I18N[currentLang][key]!==undefined) ? I18N[currentLang][key] : (I18N.en[key]!==undefined ? I18N.en[key] : key); }
+
+function setLang(lang){
+  currentLang = lang;
+  localStorage.setItem(STORAGE_LANG_KEY, lang);
+  document.documentElement.lang = lang;
+  fullRender();
+}
+
+/* ================= CODE LISTS ================= */
+const LOCATIONS = ['renal_pelvis','ureter','bladder','prostatic_urethra'];
+const T_STAGES = ['ta','t1m','t1e','tis'];
+const T_STAGES_UTUC = ['ta','tis','t1','t2','t3','t4'];
+const T_STAGES_RESULT = ['t0','ta','t1m','t1e','tis','t2'];
+const G1_OPTS = ['g1','g2','g3'];
+const G2_OPTS = ['lg','hg'];
+const RISK_GROUPS = ['low','intermediate','high','very_high'];
+const EVENT_TYPES = ['urine_test','office_cystoscopy','instillation','surgery'];
+
+/* ================= DATA ================= */
+const STORAGE_KEY = 'myblaca_demo_data_v1';
+const ATT_KEY = 'myblaca_demo_attachments_v1';
+
+function loadData(){
+  try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return {profile:{}, events:[]};
+}
+function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function loadAttachments(){
+  try{ const raw = localStorage.getItem(ATT_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return [];
+}
+function saveAttachments(){ localStorage.setItem(ATT_KEY, JSON.stringify(attachments)); }
+
+const DEMO_SEED_FLAG = 'myblaca_demo_seeded_v1';
+function buildDemoSeed(){
+  const today = new Date();
+  const iso = (offsetDaysFromDiag) => {
+    const d = new Date(2024, 2, 10); // fixed anchor: 2024-03-10 diagnosis
+    d.setDate(d.getDate() + offsetDaysFromDiag);
+    return d.toISOString().slice(0,10);
+  };
+  return {
+    profile: {
+      birthDate: '1958-06-14', sex: 'male', diagDate: iso(0),
+      location: 'bladder', tStage: 'ta', grade1: 'g2', grade2: 'lg',
+      cis: 'no', singleDose: 'yes',
+      diameter: 'lt3', multiplicity: 'single',
+      reTURB: 'no', reTURBDate:'', reTURBT:'', reTURBG1:'', reTURBG2:'',
+      riskGroup: 'intermediate',
+      side:'', neoadj:'', neoadjType:'', ln:'', nStage:'', adj:'', adjType:'',
+      notes: 'Demo patient — sample record for illustration only.'
+    },
+    events: [
+      { id: 1001, type:'surgery', date: iso(0), notes:'Initial TURBT.', surgType:'turb', resultT:'ta', resultG1:'g2', resultG2:'lg', pending:false },
+      { id: 1002, type:'instillation', date: iso(7), notes:'Post-op single dose.', instType:'chemo', pending:false },
+      { id: 1003, type:'urine_test', date: iso(60), notes:'', kind:'Routine urine cytology', urineResult:'negative', pending:false },
+      { id: 1004, type:'office_cystoscopy', date: iso(90), notes:'First 3-month check — clear.', recurrence:'no', cytology:'yes', paris:'negative', pending:false },
+      { id: 1005, type:'office_cystoscopy', date: iso(270), notes:'9-month check.', recurrence:'no', cytology:'no', pending:false },
+      { id: 1006, type:'office_cystoscopy', date: iso(455), notes:'Small recurrence seen, biopsied same session.', recurrence:'yes', recAction:'biopsy', resultT:'ta', resultG1:'g1', resultG2:'lg', cytology:'yes', paris:'negative', pending:false },
+      { id: 1007, type:'instillation', date: iso(470), notes:'Induction course, week 1.', instType:'bcg', pending:false },
+      { id: 1008, type:'instillation', date: iso(477), notes:'Induction course, week 2.', instType:'bcg', pending:false },
+      { id: 1009, type:'instillation', date: iso(484), notes:'Induction course, week 3.', instType:'bcg', pending:false },
+      { id: 1010, type:'office_cystoscopy', date: iso(560), notes:'Check after BCG induction — awaiting cytology result.', recurrence:'no', cytology:'yes', paris:'pending', pending:true },
+    ]
+  };
+}
+function seedDemoIfNeeded(){
+  let alreadySeeded = false;
+  try{ alreadySeeded = localStorage.getItem(DEMO_SEED_FLAG) === '1'; }catch(e){}
+  if(alreadySeeded) return;
+  const seed = buildDemoSeed();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
+  localStorage.setItem(ATT_KEY, JSON.stringify([]));
+  localStorage.setItem(DEMO_SEED_FLAG, '1');
+}
+function resetDemoData(){
+  if(!confirm(t('demoResetConfirm'))) return;
+  localStorage.removeItem(DEMO_SEED_FLAG);
+  seedDemoIfNeeded();
+  data = loadData();
+  attachments = loadAttachments();
+  fullRender();
+}
+seedDemoIfNeeded();
+
+let data = loadData();
+let attachments = loadAttachments();
+let activeTypeFilters = new Set();
+let recurrenceOnlyFilter = false;
+let currentTab = 'profile';
+let currentHistoryView = 'table';
+
+function setHistoryView(view){
+  currentHistoryView = view;
+  document.getElementById('viewBtnTable').classList.toggle('active', view==='table');
+  document.getElementById('viewBtnTimeline').classList.toggle('active', view==='timeline');
+  document.getElementById('tableViewWrap').classList.toggle('hidden', view!=='table');
+  document.getElementById('timelineList').classList.toggle('hidden', view!=='timeline');
+  renderHistory();
+}
+
+function fmtDate(d){ if(!d) return '—'; const [y,m,day]=d.split('-'); return `${day}.${m}.${y}`; }
+function fillSelect(id, codes, prefix, includeEmpty=true){
+  const el = document.getElementById(id); if(!el) return;
+  const cur = el.value;
+  el.innerHTML = (includeEmpty?`<option value="">${t('selectPlaceholder')}</option>`:'') +
+    codes.map(c=>`<option value="${c}">${t(prefix+c)}</option>`).join('');
+  el.value = cur;
+}
+function fillSelectYN(id){
+  const el = document.getElementById(id); if(!el) return;
+  const cur = el.value;
+  el.innerHTML = `<option value="">${t('selectPlaceholder')}</option><option value="yes">${t('yes')}</option><option value="no">${t('no')}</option>`;
+  el.value = cur;
+}
+
+/* ================= TABS ================= */
+function setTab(tabName){
+  currentTab = tabName;
+  document.querySelectorAll('.tabbar button').forEach(b=> b.classList.toggle('active', b.dataset.tab===tabName));
+  document.querySelectorAll('.screen').forEach(s=> s.classList.toggle('active', s.id==='screen-'+tabName));
+  if(tabName==='status') renderStatus();
+  if(tabName==='history') renderHistory();
+  if(tabName==='attachments') renderAttachments();
+}
+
+/* ================= PROFILE ================= */
+function applyStaticTranslations(){
+  document.getElementById('langSwitch').value = currentLang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.getAttribute('data-i18n')); });
+
+  fillSelect('p_sex', ['male','female'], 'sex_');
+  fillSelect('p_location', LOCATIONS, 'loc_');
+  fillSelect('p_grade1', G1_OPTS, 'g1_');
+  fillSelect('p_grade2', G2_OPTS, 'g2_');
+  fillSelectYN('p_cis');
+  fillSelectYN('p_singleDose');
+  fillSelect('p_diameter', ['lt3','ge3'], 'dia_');
+  fillSelect('p_multiplicity', ['single','multiple'], 'mult_');
+  fillSelectYN('p_reTURB');
+  fillSelect('p_reTURBT', T_STAGES_RESULT, 't_');
+  fillSelect('p_reTURBG1', G1_OPTS, 'g1_');
+  fillSelect('p_reTURBG2', G2_OPTS, 'g2_');
+  fillSelect('p_riskGroup', RISK_GROUPS, 'risk_');
+  fillSelect('p_side', ['left','right'], 'side_');
+  fillSelectYN('p_neoadj');
+  fillSelectYN('p_ln');
+  fillSelect('p_nStage', ['n0','n1','n2','nx'], 'n_');
+  fillSelectYN('p_adj');
+  updateTStageOptions();
+
+  fillSelect('ev_type', EVENT_TYPES, 'type_', false);
+}
+
+function updateTStageOptions(){
+  const loc = document.getElementById('p_location').value;
+  const list = (loc==='renal_pelvis'||loc==='ureter') ? T_STAGES_UTUC : T_STAGES;
+  fillSelect('p_tStage', list, 't_');
+}
+
+function renderProfileForm(){
+  const p = data.profile;
+  const loc = document.getElementById('p_location').value;
+  updateTStageOptions();
+  document.getElementById('bladderFields').classList.toggle('hidden', loc!=='bladder');
+  document.getElementById('utucFields').classList.toggle('hidden', !(loc==='renal_pelvis'||loc==='ureter'));
+  document.getElementById('reTURBFields').classList.toggle('hidden', document.getElementById('p_reTURB').value!=='yes');
+  document.getElementById('neoadjTypeWrap').classList.toggle('hidden', document.getElementById('p_neoadj').value!=='yes');
+  document.getElementById('nStageWrap').classList.toggle('hidden', document.getElementById('p_ln').value!=='yes');
+  document.getElementById('adjTypeWrap').classList.toggle('hidden', document.getElementById('p_adj').value!=='yes');
+  document.getElementById('p_cisWrap').classList.toggle('hidden', document.getElementById('p_tStage').value==='tis');
+}
+
+function fillProfileForm(){
+  const p = data.profile || {};
+  document.getElementById('p_birthDate').value = p.birthDate||'';
+  document.getElementById('p_sex').value = p.sex||'';
+  document.getElementById('p_diagDate').value = p.diagDate||'';
+  document.getElementById('p_location').value = p.location||'';
+  document.getElementById('p_tStage').value = p.tStage||'';
+  document.getElementById('p_grade1').value = p.grade1||'';
+  document.getElementById('p_grade2').value = p.grade2||'';
+  document.getElementById('p_cis').value = p.cis||'';
+  document.getElementById('p_singleDose').value = p.singleDose||'';
+  document.getElementById('p_diameter').value = p.diameter||'';
+  document.getElementById('p_multiplicity').value = p.multiplicity||'';
+  document.getElementById('p_reTURB').value = p.reTURB||'';
+  document.getElementById('p_reTURBDate').value = p.reTURBDate||'';
+  document.getElementById('p_reTURBT').value = p.reTURBT||'';
+  document.getElementById('p_reTURBG1').value = p.reTURBG1||'';
+  document.getElementById('p_reTURBG2').value = p.reTURBG2||'';
+  document.getElementById('p_riskGroup').value = p.riskGroup||'';
+  document.getElementById('p_side').value = p.side||'';
+  document.getElementById('p_neoadj').value = p.neoadj||'';
+  document.getElementById('p_neoadjType').value = p.neoadjType||'';
+  document.getElementById('p_ln').value = p.ln||'';
+  document.getElementById('p_nStage').value = p.nStage||'';
+  document.getElementById('p_adj').value = p.adj||'';
+  document.getElementById('p_adjType').value = p.adjType||'';
+  document.getElementById('p_notes').value = p.notes||'';
+  renderProfileForm();
+}
+
+function saveProfile(){
+  const grade1 = document.getElementById('p_grade1').value;
+  const grade2 = document.getElementById('p_grade2').value;
+  if(!grade1 && !grade2){ alert(t('profileSavedNeedGrade')); return; }
+  data.profile = {
+    birthDate: document.getElementById('p_birthDate').value,
+    sex: document.getElementById('p_sex').value,
+    diagDate: document.getElementById('p_diagDate').value,
+    location: document.getElementById('p_location').value,
+    tStage: document.getElementById('p_tStage').value,
+    grade1, grade2,
+    cis: document.getElementById('p_cis').value,
+    singleDose: document.getElementById('p_singleDose').value,
+    diameter: document.getElementById('p_diameter').value,
+    multiplicity: document.getElementById('p_multiplicity').value,
+    reTURB: document.getElementById('p_reTURB').value,
+    reTURBDate: document.getElementById('p_reTURBDate').value,
+    reTURBT: document.getElementById('p_reTURBT').value,
+    reTURBG1: document.getElementById('p_reTURBG1').value,
+    reTURBG2: document.getElementById('p_reTURBG2').value,
+    riskGroup: document.getElementById('p_riskGroup').value,
+    side: document.getElementById('p_side').value,
+    neoadj: document.getElementById('p_neoadj').value,
+    neoadjType: document.getElementById('p_neoadjType').value,
+    ln: document.getElementById('p_ln').value,
+    nStage: document.getElementById('p_nStage').value,
+    adj: document.getElementById('p_adj').value,
+    adjType: document.getElementById('p_adjType').value,
+    notes: document.getElementById('p_notes').value
+  };
+  saveData();
+  alert(t('saveButton')+' ✓');
+}
+
+/* ================= ADD EVENT ================= */
+function renderEventFields(){
+  const type = document.getElementById('ev_type').value || 'urine_test';
+  const box = document.getElementById('ev_extraFields');
+  if(type==='urine_test'){
+    box.innerHTML = `
+      <div class="row">
+        <div class="field"><label>${t('urineKindLabel')}</label><input type="text" id="ev_kind"></div>
+        <div class="field"><label>${t('urineResultLabel')}</label><select id="ev_urineResult"></select></div>
+      </div>`;
+    fillSelect('ev_urineResult', ['negative','positive'], 'urineRes_');
+  } else if(type==='office_cystoscopy'){
+    box.innerHTML = `
+      <div class="row">
+        <div class="field"><label>${t('recurrenceLabel')}</label><select id="ev_recurrence" onchange="onRecurrenceChange()"></select></div>
+        <div class="field"><label>${t('cytologyLabel')}</label><select id="ev_cytology" onchange="onCytologyChange()"></select></div>
+      </div>
+      <div id="ev_recActionWrap" class="row hidden">
+        <div class="field"><label>${t('recurrenceActionLabel')}</label><select id="ev_recAction" onchange="onRecActionChange()"></select></div>
+      </div>
+      <div id="ev_parisWrap" class="row hidden">
+        <div class="field"><label>${t('parisLabel')}</label><select id="ev_paris"></select></div>
+      </div>
+      <div id="ev_biopsyResultWrap" class="hidden"></div>`;
+    fillSelectYN('ev_recurrence');
+    fillSelectYN('ev_cytology');
+    fillSelect('ev_recAction', ['biopsy','fulguration','surveillance','surgery_scheduled'], 'rec_');
+    fillSelect('ev_paris', ['pending','nondiagnostic','negative','atypical','suspicious','hguc','other'], 'paris_');
+  } else if(type==='instillation'){
+    box.innerHTML = `<div class="row"><div class="field"><label>${t('instillationTypeLabel')}</label><select id="ev_instType"></select></div></div>`;
+    fillSelect('ev_instType', ['chemo','bcg'], 'inst_');
+  } else if(type==='surgery'){
+    box.innerHTML = `
+      <div class="row"><div class="field"><label>${t('surgeryTypeLabel')}</label><select id="ev_surgType" onchange="onSurgTypeChange()"></select></div></div>
+      <div id="ev_surgResultWrap" class="hidden"></div>`;
+    fillSelect('ev_surgType', ['turb','cystoscopy_biopsy','fulguration'], 'surg_');
+    onSurgTypeChange();
+  }
+}
+function resultFieldsHTML(prefix){
+  return `
+    <div class="row">
+      <div class="field"><label>${t('resultTStageLabel')}</label><select id="${prefix}T"></select></div>
+      <div class="field"><label>${t('resultGrade1Label')}</label><select id="${prefix}G1"></select></div>
+      <div class="field"><label>${t('resultGrade2Label')}</label><select id="${prefix}G2"></select></div>
+    </div>`;
+}
+function onRecurrenceChange(){
+  const isYes = document.getElementById('ev_recurrence').value==='yes';
+  document.getElementById('ev_recActionWrap').classList.toggle('hidden', !isYes);
+  if(!isYes) document.getElementById('ev_biopsyResultWrap').innerHTML='';
+  onRecActionChange();
+}
+function onRecActionChange(){
+  const wrap = document.getElementById('ev_biopsyResultWrap');
+  const isBiopsy = document.getElementById('ev_recurrence').value==='yes' && document.getElementById('ev_recAction').value==='biopsy';
+  if(isBiopsy){
+    wrap.innerHTML = resultFieldsHTML('ev_biores');
+    fillSelect('ev_bioresT', T_STAGES_RESULT.concat(['pending']), 't_');
+    fillSelect('ev_bioresG1', G1_OPTS.concat(['pending']), 'g1_');
+    fillSelect('ev_bioresG2', G2_OPTS.concat(['pending']), 'g2_');
+  } else {
+    wrap.innerHTML='';
+  }
+}
+function onCytologyChange(){
+  document.getElementById('ev_parisWrap').classList.toggle('hidden', document.getElementById('ev_cytology').value!=='yes');
+}
+function onSurgTypeChange(){
+  const type = document.getElementById('ev_surgType').value;
+  const wrap = document.getElementById('ev_surgResultWrap');
+  if(type==='turb' || type==='cystoscopy_biopsy'){
+    wrap.classList.remove('hidden');
+    wrap.innerHTML = resultFieldsHTML('ev_surgres');
+    fillSelect('ev_surgresT', T_STAGES_RESULT.concat(['pending']), 't_');
+    fillSelect('ev_surgresG1', G1_OPTS.concat(['pending']), 'g1_');
+    fillSelect('ev_surgresG2', G2_OPTS.concat(['pending']), 'g2_');
+  } else {
+    wrap.classList.add('hidden'); wrap.innerHTML='';
+  }
+}
+
+function addEvent(){
+  const type = document.getElementById('ev_type').value;
+  const dateVal = document.getElementById('ev_date').value;
+  if(!dateVal){ alert(t('askDate')); return; }
+  const ev = { id: Date.now(), type, date: dateVal, notes: document.getElementById('ev_notes').value, pending:false };
+
+  if(type==='urine_test'){
+    ev.kind = document.getElementById('ev_kind').value;
+    ev.urineResult = document.getElementById('ev_urineResult').value;
+  } else if(type==='office_cystoscopy'){
+    ev.recurrence = document.getElementById('ev_recurrence').value;
+    ev.cytology = document.getElementById('ev_cytology').value;
+    if(ev.cytology==='yes'){
+      ev.paris = document.getElementById('ev_paris').value;
+      if(ev.paris==='pending') ev.pending = true;
+    }
+    if(ev.recurrence==='yes'){
+      ev.recAction = document.getElementById('ev_recAction').value;
+      if(ev.recAction==='biopsy'){
+        ev.resultT = document.getElementById('ev_bioresT').value;
+        ev.resultG1 = document.getElementById('ev_bioresG1').value;
+        ev.resultG2 = document.getElementById('ev_bioresG2').value;
+        if(ev.resultT==='pending'||ev.resultG1==='pending'||ev.resultG2==='pending') ev.pending = true;
+      }
+    }
+  } else if(type==='instillation'){
+    ev.instType = document.getElementById('ev_instType').value;
+  } else if(type==='surgery'){
+    ev.surgType = document.getElementById('ev_surgType').value;
+    if(ev.surgType==='turb' || ev.surgType==='cystoscopy_biopsy'){
+      ev.resultT = document.getElementById('ev_surgresT').value;
+      ev.resultG1 = document.getElementById('ev_surgresG1').value;
+      ev.resultG2 = document.getElementById('ev_surgresG2').value;
+      if(ev.resultT==='pending'||ev.resultG1==='pending'||ev.resultG2==='pending') ev.pending = true;
+    }
+  }
+  data.events.push(ev);
+  saveData();
+  document.getElementById('ev_notes').value='';
+  document.getElementById('ev_date').value='';
+  renderEventFields();
+  renderPendingBanner();
+  alert(t('addEventButton')+' ✓');
+}
+
+/* ================= HISTORY / TIMELINE ================= */
+function updateFilterButtons(){
+  document.getElementById('filterBtn-all').classList.toggle('active', activeTypeFilters.size===0 && !recurrenceOnlyFilter);
+  document.querySelectorAll('.filters button[data-f]').forEach(b=>{
+    const f = b.dataset.f;
+    if(f==='recurrenceOnly') b.classList.toggle('active', recurrenceOnlyFilter);
+    else b.classList.toggle('active', activeTypeFilters.has(f));
+  });
+}
+function toggleAllFilter(){
+  activeTypeFilters.clear();
+  recurrenceOnlyFilter = false;
+  updateFilterButtons();
+  renderHistory();
+}
+function toggleTypeFilter(type){
+  if(activeTypeFilters.has(type)) activeTypeFilters.delete(type);
+  else activeTypeFilters.add(type);
+  updateFilterButtons();
+  renderHistory();
+}
+function toggleRecurrenceFilter(){
+  recurrenceOnlyFilter = !recurrenceOnlyFilter;
+  updateFilterButtons();
+  renderHistory();
+}
+function labelResult(prefix, ev){
+  const parts = [];
+  if(ev[prefix+'T'] && ev[prefix+'T']!=='pending') parts.push(t('t_'+ev[prefix+'T']));
+  if(ev[prefix+'G1'] && ev[prefix+'G1']!=='pending') parts.push(t('g1_'+ev[prefix+'G1']));
+  if(ev[prefix+'G2'] && ev[prefix+'G2']!=='pending') parts.push(t('g2_'+ev[prefix+'G2']));
+  return parts.join(' · ');
+}
+function eventSummary(ev){
+  const lines = [];
+  if(ev.type==='urine_test'){
+    if(ev.urineResult) lines.push(t('urineRes_'+ev.urineResult));
+    if(ev.kind) lines.push(ev.kind);
+  } else if(ev.type==='office_cystoscopy'){
+    lines.push(t('recurrenceLabel')+' '+(ev.recurrence==='yes'?t('yes'):t('no')));
+  } else if(ev.type==='instillation'){
+    lines.push(t('inst_'+ev.instType));
+  } else if(ev.type==='surgery'){
+    lines.push(t('surg_'+ev.surgType));
+    if(ev.surgType==='turb'||ev.surgType==='cystoscopy_biopsy'){
+      const r = labelResult('result', ev);
+      if(r) lines.push(r); else if(ev.pending) lines.push(t('pendingBadge'));
+    }
+  }
+  return lines.join(' · ');
+}
+function eventDetailHTML(ev){
+  const rows = [];
+  const add = (label, value) => { if(value) rows.push(`<div class="statRow"><span>${label}</span><b>${value}</b></div>`); };
+  add(t('eventTypeLabel'), t('tag_'+ev.type));
+  add(t('eventDateLabel'), fmtDate(ev.date));
+  if(ev.type==='urine_test'){
+    add(t('urineKindLabel'), ev.kind);
+    add(t('urineResultLabel'), ev.urineResult ? t('urineRes_'+ev.urineResult) : '');
+  } else if(ev.type==='office_cystoscopy'){
+    add(t('recurrenceLabel'), ev.recurrence==='yes'?t('yes'):t('no'));
+    if(ev.recurrence==='yes'){
+      add(t('recurrenceActionLabel'), t('rec_'+ev.recAction));
+      if(ev.recAction==='biopsy'){
+        const r = labelResult('result', ev);
+        add(t('resultTStageLabel')+'/'+t('resultGrade1Label')+'/'+t('resultGrade2Label'), r || (ev.pending?t('pendingBadge'):''));
+      }
+    }
+    add(t('cytologyLabel'), ev.cytology==='yes'?t('yes'):t('no'));
+    if(ev.cytology==='yes'){
+      add(t('parisLabel'), ev.paris && ev.paris!=='pending' ? t('paris_'+ev.paris) : t('pendingBadge'));
+    }
+  } else if(ev.type==='instillation'){
+    add(t('instillationTypeLabel'), t('inst_'+ev.instType));
+  } else if(ev.type==='surgery'){
+    add(t('surgeryTypeLabel'), t('surg_'+ev.surgType));
+    if(ev.surgType==='turb'||ev.surgType==='cystoscopy_biopsy'){
+      const r = labelResult('result', ev);
+      add(t('resultTStageLabel')+'/'+t('resultGrade1Label')+'/'+t('resultGrade2Label'), r || (ev.pending?t('pendingBadge'):''));
+    }
+  }
+  if(ev.notes) rows.push(`<div class="statRow" style="flex-direction:column;align-items:flex-start;"><span>${t('notesLabel')}</span><b style="white-space:pre-wrap;text-align:left;margin-top:4px;">${ev.notes.replace(/</g,'&lt;')}</b></div>`);
+  return rows.join('');
+}
+function profileDetailHTML(){
+  const p = data.profile || {};
+  const rows = [];
+  const add = (label, value) => { if(value) rows.push(`<div class="statRow"><span>${label}</span><b>${value}</b></div>`); };
+  add(t('birthDateLabel'), p.birthDate?fmtDate(p.birthDate):'');
+  add(t('sexLabel'), p.sex?t('sex_'+p.sex):'');
+  add(t('diagDateLabel'), p.diagDate?fmtDate(p.diagDate):'');
+  add(t('locationLabel'), p.location?t('loc_'+p.location):'');
+  add(t('tStageLabel'), p.tStage?t('t_'+p.tStage):'');
+  add(t('grade1Label'), p.grade1?t('g1_'+p.grade1):'');
+  add(t('grade2Label'), p.grade2?t('g2_'+p.grade2):'');
+  add(t('cisLabel'), p.cis?t(p.cis==='yes'?'yes':'no'):'');
+  add(t('singleDoseLabel'), p.singleDose?t(p.singleDose==='yes'?'yes':'no'):'');
+  if(p.location==='bladder'){
+    add(t('diameterLabel'), p.diameter?t('dia_'+p.diameter):'');
+    add(t('multiplicityLabel'), p.multiplicity?t('mult_'+p.multiplicity):'');
+    add(t('reTURBLabel'), p.reTURB?t(p.reTURB==='yes'?'yes':'no'):'');
+    if(p.reTURB==='yes'){
+      add(t('reTURBDateLabel'), p.reTURBDate?fmtDate(p.reTURBDate):'');
+      const r=[p.reTURBT?t('t_'+p.reTURBT):'', p.reTURBG1?t('g1_'+p.reTURBG1):'', p.reTURBG2?t('g2_'+p.reTURBG2):''].filter(Boolean).join(' · ');
+      add(t('resultTStageLabel')+'/'+t('resultGrade1Label')+'/'+t('resultGrade2Label'), r);
+    }
+    add(t('riskGroupLabel'), p.riskGroup?t('risk_'+p.riskGroup):'');
+  } else if(p.location==='renal_pelvis'||p.location==='ureter'){
+    add(t('sideLabel'), p.side?t('side_'+p.side):'');
+    add(t('neoadjLabel'), p.neoadj?t(p.neoadj==='yes'?'yes':'no'):'');
+    if(p.neoadj==='yes') add(t('neoadjTypeLabel'), p.neoadjType);
+    add(t('lnLabel'), p.ln?t(p.ln==='yes'?'yes':'no'):'');
+    if(p.ln==='yes') add(t('nStageLabel'), p.nStage?t('n_'+p.nStage):'');
+    add(t('adjLabel'), p.adj?t(p.adj==='yes'?'yes':'no'):'');
+    if(p.adj==='yes') add(t('adjTypeLabel'), p.adjType);
+  }
+  if(p.notes) rows.push(`<div class="statRow" style="flex-direction:column;align-items:flex-start;"><span>${t('notesLabel')}</span><b style="white-space:pre-wrap;text-align:left;margin-top:4px;">${p.notes.replace(/</g,'&lt;')}</b></div>`);
+  return rows.join('') || `<p class="empty">${t('st_noProfile')}</p>`;
+}
+function showTlTooltip(evt, key){
+  const tip = document.getElementById('tlTooltip');
+  let html;
+  if(key==='primary'){
+    html = `<div class="tlTipTitle">${t('tag_primary')}</div>` + profileDetailHTML();
+  } else {
+    const ev = data.events.find(x=>String(x.id)===String(key));
+    if(!ev) return;
+    html = `<div class="tlTipTitle">${t('tag_'+ev.type)} · ${fmtDate(ev.date)}</div>` + eventDetailHTML(ev);
+  }
+  tip.innerHTML = html;
+  tip.style.display = 'block';
+  const nodeRect = evt.currentTarget.getBoundingClientRect();
+  const tipRect = tip.getBoundingClientRect();
+  let x = nodeRect.left + nodeRect.width/2 - tipRect.width/2;
+  let y = nodeRect.top - tipRect.height - 10;
+  if(y < 8) y = nodeRect.bottom + 10;
+  x = Math.max(8, Math.min(x, window.innerWidth - tipRect.width - 8));
+  tip.style.left = x+'px';
+  tip.style.top = y+'px';
+}
+function hideTlTooltip(){
+  document.getElementById('tlTooltip').style.display = 'none';
+}
+function openEventDetail(id){
+  const ev = data.events.find(e=>String(e.id)===String(id));
+  if(!ev) return;
+  document.getElementById('detailModalTitle').textContent = t('detailsTitle');
+  document.getElementById('detailModalBody').innerHTML = eventDetailHTML(ev);
+  const actions = document.getElementById('detailModalActions');
+  let html = '';
+  if(ev.pending) html += `<button class="btn-ghost" style="flex:1" onclick="completeEvent(${ev.id});closeEventDetail();">${t('completeButton')}</button>`;
+  html += `<button class="btn-danger" style="flex:1" onclick="deleteEvent(${ev.id});closeEventDetail();">${t('deleteButton')}</button>`;
+  actions.innerHTML = html;
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+function openProfileDetail(){
+  document.getElementById('detailModalTitle').textContent = t('profileTitle');
+  document.getElementById('detailModalBody').innerHTML = profileDetailHTML();
+  document.getElementById('detailModalActions').innerHTML = '';
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+function closeEventDetail(){
+  document.getElementById('detailModal').classList.add('hidden');
+}
+function isRecurrenceEvent(ev){
+  return ev.type==='office_cystoscopy' && ev.recurrence==='yes';
+}
+function getFilteredItems(){
+  let items = [...data.events];
+  if(data.profile && data.profile.diagDate){
+    items.push({id:'primary', type:'primary', date:data.profile.diagDate, isPrimary:true});
+  }
+  items.sort((a,b)=> b.date.localeCompare(a.date));
+  if(recurrenceOnlyFilter) items = items.filter(isRecurrenceEvent);
+  if(activeTypeFilters.size>0) items = items.filter(e=> activeTypeFilters.has(e.type));
+  return items;
+}
+function renderHistory(){
+  if(currentHistoryView==='table') renderTable();
+  else renderTimeline();
+}
+function renderTable(){
+  const body = document.getElementById('tableViewBody');
+  const items = getFilteredItems();
+  if(items.length===0){ body.innerHTML = `<tr><td colspan="5" class="empty">${t('timelineEmpty')}</td></tr>`; return; }
+  body.innerHTML = items.map(e=>{
+    if(e.isPrimary){
+      const p = data.profile;
+      const locStr = p.location ? t('loc_'+p.location) : '';
+      const gradeStr = [p.tStage?t('t_'+p.tStage):'', p.grade1?t('g1_'+p.grade1):'', p.grade2?t('g2_'+p.grade2):''].filter(Boolean).join(' · ');
+      return `<tr>
+        <td><span class="tag tag-primary">${t('tag_primary')}</span></td>
+        <td class="colDate">${fmtDate(e.date)}</td>
+        <td>${locStr}${gradeStr?' · '+gradeStr:''}</td>
+        <td class="colNotes">—</td>
+        <td class="colActions no-print"><button class="btn-ghost" onclick="openProfileDetail()">${t('detailsButton')}</button></td>
+      </tr>`;
+    }
+    const summary = eventSummary(e) || '—';
+    const recBadge = isRecurrenceEvent(e) ? ` <span class="tag tag-recurrence">${t('filterRecurrence')}</span>` : '';
+    const pendBadge = e.pending ? ` <span class="tag tag-pending">${t('pendingBadge')}</span>` : '';
+    return `<tr>
+      <td><span class="tag tag-${e.type}">${t('tag_'+e.type)}</span>${recBadge}${pendBadge}</td>
+      <td class="colDate">${fmtDate(e.date)}</td>
+      <td>${summary}</td>
+      <td class="colNotes">${e.notes ? e.notes.replace(/</g,'&lt;') : '—'}</td>
+      <td class="colActions no-print">
+        <button class="btn-ghost" onclick="openEventDetail(${e.id})">${t('detailsButton')}</button>
+        ${e.pending?`<button class="btn-ghost" onclick="completeEvent(${e.id})">${t('completeButton')}</button>`:''}
+        <button class="btn-danger" onclick="deleteEvent(${e.id})">${t('deleteButton')}</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+function renderTimeline(){
+  const container = document.getElementById('timelineList');
+  const items = getFilteredItems(); // newest-first
+
+  const laneOrder = ['primary','surgery','instillation','office_cystoscopy','urine_test'];
+  const laneLabelKey = {primary:'tag_primary', surgery:'tag_surgery', instillation:'tag_instillation', office_cystoscopy:'tag_office_cystoscopy', urine_test:'tag_urine_test'};
+  const groups = {primary:[], surgery:[], instillation:[], office_cystoscopy:[], urine_test:[]};
+  items.forEach(e=>{
+    const key = e.isPrimary ? 'primary' : e.type;
+    if(groups[key]) groups[key].push(e);
+  });
+
+  const allDates = items.map(e=> new Date(e.date).getTime()).filter(n=>!isNaN(n));
+  if(allDates.length===0){ container.innerHTML = `<div class="empty">${t('timelineEmpty')}</div>`; return; }
+
+  // Compressed scale: real dates position events left→right, but any single gap
+  // between consecutive distinct dates is capped, so a 2-week gap and a 2-year
+  // gap don't force endless scrolling — long gaps are visually "broken" instead.
+  const PX_PER_DAY = 3;      // spacing for gaps up to the cap
+  const CAP_DAYS = 45;       // gaps longer than this stop adding extra width
+  const MIN_STEP = 46;       // minimum px between two distinct dates (label width)
+  const LEFT_PAD = 30, RIGHT_PAD = 40;
+
+  const uniqueMs = [...new Set(allDates)].sort((a,b)=>a-b);
+  const dateX = {};
+  const breakPoints = [];
+  dateX[uniqueMs[0]] = 0;
+  let cum = 0;
+  for(let i=1;i<uniqueMs.length;i++){
+    const gapDays = (uniqueMs[i]-uniqueMs[i-1])/86400000;
+    const stepPx = Math.max(MIN_STEP, Math.min(gapDays, CAP_DAYS)*PX_PER_DAY);
+    if(gapDays > CAP_DAYS) breakPoints.push(cum + stepPx/2);
+    cum += stepPx;
+    dateX[uniqueMs[i]] = cum;
+  }
+  const trackWidth = Math.max(320, LEFT_PAD + cum + RIGHT_PAD);
+  const breakHTML = breakPoints.map(x=>`<div class="tlBreak" style="left:${LEFT_PAD+x}px"></div>`).join('');
+
+  const dayNudge = {}; // per lane: date ms -> count of collisions so far (same-day duplicates)
+  const laneNode = (e, laneKey)=>{
+    const ms = new Date(e.date).getTime();
+    dayNudge[laneKey] = dayNudge[laneKey] || {};
+    const n = dayNudge[laneKey][ms] || 0;
+    dayNudge[laneKey][ms] = n+1;
+    const left = LEFT_PAD + dateX[ms] + n*13;
+    if(e.isPrimary){
+      return `<div class="tlNode tl-primary" style="left:${left}px" onclick="openProfileDetail()" onmouseenter="showTlTooltip(event,'primary')" onmouseleave="hideTlTooltip()"><div class="tlBadges"></div><div class="tlDot"></div><div class="tlDate">${fmtDate(e.date)}</div></div>`;
+    }
+    const recBadge = isRecurrenceEvent(e) ? `<span class="tlBadge rec" title="${t('filterRecurrence')}"></span>` : '';
+    const pendBadge = e.pending ? `<span class="tlBadge pend" title="${t('pendingBadge')}"></span>` : '';
+    return `<div class="tlNode tl-${e.type}" style="left:${left}px" onclick="openEventDetail(${e.id})" onmouseenter="showTlTooltip(event,'${e.id}')" onmouseleave="hideTlTooltip()"><div class="tlBadges">${recBadge}${pendBadge}</div><div class="tlDot"></div><div class="tlDate">${fmtDate(e.date)}</div></div>`;
+  };
+
+  let anyItems = false;
+  let rowsHtml = '';
+  laneOrder.forEach(key=>{
+    const list = groups[key];
+    if(list.length===0) return;
+    anyItems = true;
+    const nodes = [...list].reverse().map(e=>laneNode(e,key)).join('');
+    rowsHtml += `<div class="tlLane"><div class="tlLaneLabel">${t(laneLabelKey[key])}</div><div class="tlLaneTrack" style="width:${trackWidth}px">${breakHTML}${nodes}</div></div>`;
+  });
+
+  if(!anyItems){ container.innerHTML = `<div class="empty">${t('timelineEmpty')}</div>`; return; }
+  container.innerHTML = rowsHtml;
+}
+function deleteEvent(id){
+  if(!confirm(t('confirmDelete'))) return;
+  data.events = data.events.filter(e=>e.id!==id);
+  saveData(); renderHistory(); renderPendingBanner();
+}
+function completeEvent(id){
+  const ev = data.events.find(e=>e.id===id);
+  if(!ev) return;
+  const prefix = ev.type==='surgery' ? 'result' : 'result';
+  const tVal = prompt(t('resultTStageLabel')+' ('+T_STAGES_RESULT.map(c=>t('t_'+c)).join(', ')+')', ev.resultT!=='pending'?ev.resultT:'');
+  if(tVal===null) return;
+  const g1Val = prompt(t('resultGrade1Label')+' ('+G1_OPTS.map(c=>t('g1_'+c)).join(', ')+', -)', '');
+  const g2Val = prompt(t('resultGrade2Label')+' ('+G2_OPTS.map(c=>t('g2_'+c)).join(', ')+', -)', '');
+  const matchCode = (val, opts, prefix)=>{ const found = opts.find(c=> t(prefix+c).toLowerCase()===String(val).trim().toLowerCase() || c===String(val).trim().toLowerCase()); return found||''; };
+  if(tVal) ev.resultT = matchCode(tVal, T_STAGES_RESULT, 't_') || ev.resultT;
+  if(g1Val) ev.resultG1 = matchCode(g1Val, G1_OPTS, 'g1_');
+  if(g2Val) ev.resultG2 = matchCode(g2Val, G2_OPTS, 'g2_');
+  if(ev.paris==='pending'){
+    const parisVal = prompt(t('parisLabel')+' ('+['nondiagnostic','negative','atypical','suspicious','hguc','other'].map(c=>t('paris_'+c)).join(', ')+')','');
+    if(parisVal){ const found = ['nondiagnostic','negative','atypical','suspicious','hguc','other'].find(c=> t('paris_'+c).toLowerCase()===parisVal.trim().toLowerCase()); if(found) ev.paris = found; }
+  }
+  ev.pending = (ev.resultT==='pending' || ev.resultG1==='pending' || ev.resultG2==='pending' || ev.paris==='pending');
+  saveData(); renderHistory(); renderPendingBanner();
+}
+
+/* pending banner */
+function renderPendingBanner(){
+  const n = data.events.filter(e=>e.pending).length;
+  const banner = document.getElementById('pendingBanner');
+  if(n===0){ banner.classList.add('hidden'); return; }
+  banner.textContent = t('pendingBannerText')(n);
+  banner.classList.remove('hidden');
+}
+function jumpToPending(){ setTab('history'); setFilter('all'); }
+
+/* ================= STATUS ================= */
+function renderStatus(){
+  const p = data.profile || {};
+  const box = document.getElementById('statusBox');
+  if(!p.diagDate){ box.innerHTML = `<p class="empty">${t('st_noProfile')}</p>`; document.getElementById('scheduleBox').innerHTML=''; return; }
+
+  const recEvents = data.events.filter(isRecurrenceEvent);
+  const lastRec = recEvents.length ? recEvents.reduce((a,b)=> a.date>b.date?a:b).date : null;
+  const instEvents = data.events.filter(e=>e.type==='instillation');
+  const bcgCount = instEvents.filter(e=>e.instType==='bcg').length;
+  const chemoCount = instEvents.filter(e=>e.instType==='chemo').length;
+  const cystoDates = data.events.filter(e=>e.type==='office_cystoscopy'||e.type==='surgery').map(e=>e.date);
+  const lastCysto = cystoDates.length ? cystoDates.reduce((a,b)=>a>b?a:b) : null;
+
+  box.innerHTML = `
+    <div class="statRow"><span>${t('st_diagDate')}</span><b>${fmtDate(p.diagDate)}</b></div>
+    <div class="statRow"><span>${t('st_risk')}</span><b>${p.riskGroup?t('risk_'+p.riskGroup):t('st_none')}</b></div>
+    <div class="statRow"><span>${t('st_recurrences')}</span><b>${recEvents.length}</b></div>
+    <div class="statRow"><span>${t('st_lastRecurrence')}</span><b>${lastRec?fmtDate(lastRec):t('st_none')}</b></div>
+    <div class="statRow"><span>${t('st_instillations')}</span><b>${bcgCount||chemoCount ? `BCG: ${bcgCount} · ${t('inst_chemo')}: ${chemoCount}` : t('st_none')}</b></div>
+    <div class="statRow"><span>${t('st_lastCysto')}</span><b>${lastCysto?fmtDate(lastCysto):t('st_none')}</b></div>
+  `;
+
+  const schedBox = document.getElementById('scheduleBox');
+  if(p.location==='bladder' && p.riskGroup){
+    schedBox.textContent = t('sched_'+p.riskGroup);
+  } else if(p.location==='renal_pelvis' || p.location==='ureter'){
+    schedBox.textContent = t('sched_utuc');
+  } else {
+    schedBox.textContent = t('sched_needRisk');
+  }
+}
+
+/* ================= ATTACHMENTS ================= */
+function fillAttachEventSelect(){
+  const el = document.getElementById('att_event');
+  const opts = [`<option value="">${t('attachNoneOption')}</option>`];
+  [...data.events].sort((a,b)=>b.date.localeCompare(a.date)).forEach(e=>{
+    opts.push(`<option value="${e.id}">${fmtDate(e.date)} — ${t('tag_'+e.type)}</option>`);
+  });
+  el.innerHTML = opts.join('');
+}
+function addAttachment(){
+  const fileInput = document.getElementById('att_file');
+  const file = fileInput.files[0];
+  if(!file) return;
+  const img = new Image();
+  const reader = new FileReader();
+  reader.onload = function(e){
+    img.onload = function(){
+      const maxW = 800;
+      const scale = Math.min(1, maxW/img.width);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width*scale; canvas.height = img.height*scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      attachments.push({
+        id: Date.now(),
+        date: new Date().toISOString().slice(0,10),
+        note: document.getElementById('att_note').value,
+        linkedEventId: document.getElementById('att_event').value || null,
+        dataUrl
+      });
+      try{ saveAttachments(); }catch(err){ alert('Storage limit reached — try deleting an old photo first.'); attachments.pop(); return; }
+      document.getElementById('att_note').value=''; fileInput.value='';
+      renderAttachments();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function deleteAttachment(id){
+  if(!confirm(t('confirmDelete'))) return;
+  attachments = attachments.filter(a=>a.id!==id);
+  saveAttachments(); renderAttachments();
+}
+function renderAttachments(){
+  fillAttachEventSelect();
+  const grid = document.getElementById('attachGrid');
+  if(attachments.length===0){ grid.innerHTML = `<div class="empty">${t('attachEmpty')}</div>`; return; }
+  grid.innerHTML = [...attachments].sort((a,b)=>b.date.localeCompare(a.date)).map(a=>{
+    const linkedEv = a.linkedEventId ? data.events.find(e=>String(e.id)===String(a.linkedEventId)) : null;
+    return `<div class="thumbCard">
+      <img src="${a.dataUrl}">
+      <div class="thumbMeta">
+        ${fmtDate(a.date)}${linkedEv?` · ${t('tag_'+linkedEv.type)}`:''}
+        ${a.note?`<br>${a.note.replace(/</g,'&lt;')}`:''}
+        <br><button class="btn-danger no-print" style="padding:2px 4px;margin-top:4px" onclick="deleteAttachment(${a.id})">${t('attachDelete')}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ================= BACKUP ================= */
+function exportData(){
+  const payload = {profile:data.profile, events:data.events, attachments};
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `myblaca-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(url);
+}
+function importData(event){
+  const file = event.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const imported = JSON.parse(e.target.result);
+      if(!imported.events) throw new Error('bad format');
+      if(!confirm(t('importConfirm'))) return;
+      data = {profile: imported.profile||{}, events: imported.events||[]};
+      attachments = imported.attachments||[];
+      saveData(); saveAttachments();
+      fullRender();
+      alert(t('importSuccess'));
+    }catch(err){ alert(t('importError')); }
+  };
+  reader.readAsText(file);
+}
+
+/* ================= INIT ================= */
+function fullRender(){
+  applyStaticTranslations();
+  fillProfileForm();
+  renderEventFields();
+  renderHistory();
+  renderStatus();
+  renderAttachments();
+  renderPendingBanner();
+  setTab(currentTab);
+}
+document.documentElement.lang = currentLang;
+fullRender();
+document.getElementById('timelineList').addEventListener('scroll', hideTlTooltip);
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
+</script>
+</body>
+</html>
