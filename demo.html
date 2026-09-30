@@ -876,7 +876,18 @@ function buildDemoSeed(){
       { id: 1007, type:'instillation', date: iso(470), notes:'Induction course, week 1.', instType:'bcg', pending:false },
       { id: 1008, type:'instillation', date: iso(477), notes:'Induction course, week 2.', instType:'bcg', pending:false },
       { id: 1009, type:'instillation', date: iso(484), notes:'Induction course, week 3.', instType:'bcg', pending:false },
-      { id: 1010, type:'office_cystoscopy', date: iso(560), notes:'Check after BCG induction — awaiting cytology result.', recurrence:'no', cytology:'yes', paris:'pending', pending:true },
+      { id: 1010, type:'office_cystoscopy', date: iso(560), notes:'Check after BCG induction — clear.', recurrence:'no', cytology:'yes', paris:'negative', pending:false },
+      { id: 1011, type:'urine_test', date: iso(610), notes:'', kind:'Routine urine cytology', urineResult:'negative', pending:false },
+      { id: 1012, type:'office_cystoscopy', date: iso(640), notes:'Routine check — clear.', recurrence:'no', cytology:'no', pending:false },
+      { id: 1013, type:'office_cystoscopy', date: iso(820), notes:'Larger recurrence found — TURB scheduled.', recurrence:'yes', recAction:'surgery_scheduled', cytology:'yes', paris:'atypical', pending:false },
+      { id: 1014, type:'surgery', date: iso(835), notes:'Second TURB for recurrence — higher stage/grade this time.', surgType:'turb', resultT:'t1', resultG1:'g3', resultG2:'hg', pending:false },
+      { id: 1015, type:'instillation', date: iso(842), notes:'Post-op single dose after second TURB.', instType:'chemo', pending:false },
+      { id: 1016, type:'office_cystoscopy', date: iso(900), notes:'First check after second TURB — clear.', recurrence:'no', cytology:'yes', paris:'negative', pending:false },
+      { id: 1017, type:'instillation', date: iso(920), notes:'Re-induction BCG, week 1.', instType:'bcg', pending:false },
+      { id: 1018, type:'instillation', date: iso(927), notes:'Re-induction BCG, week 2.', instType:'bcg', pending:false },
+      { id: 1019, type:'instillation', date: iso(934), notes:'Re-induction BCG, week 3.', instType:'bcg', pending:false },
+      { id: 1020, type:'urine_test', date: iso(980), notes:'', kind:'Routine urine cytology', urineResult:'negative', pending:false },
+      { id: 1021, type:'office_cystoscopy', date: iso(1010), notes:'Check after re-induction — awaiting cytology result.', recurrence:'no', cytology:'yes', paris:'pending', pending:true },
     ]
   };
 }
