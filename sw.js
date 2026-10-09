@@ -1,4 +1,4 @@
-const CACHE_NAME = 'myblaca-v16';
+const CACHE_NAME = 'myblaca-v17';
 const ASSETS = ['./app.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (event) => {

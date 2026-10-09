@@ -1291,8 +1291,11 @@ function getFilteredItems(){
     items.push({id:'primary', type:'primary', date:data.profile.diagDate, isPrimary:true});
   }
   items.sort((a,b)=> b.date.localeCompare(a.date));
-  if(recurrenceOnlyFilter) items = items.filter(isRecurrenceEvent);
-  if(activeTypeFilters.size>0) items = items.filter(e=> activeTypeFilters.has(e.type));
+  // Selected filters are combined with OR: show an event if its type is selected,
+  // or if "Recurrences" is selected and the event is a recurrence.
+  if(activeTypeFilters.size>0 || recurrenceOnlyFilter){
+    items = items.filter(e=> activeTypeFilters.has(e.type) || (recurrenceOnlyFilter && isRecurrenceEvent(e)));
+  }
   return items;
 }
 function renderHistory(){
@@ -1431,7 +1434,7 @@ function renderPendingBanner(){
   banner.textContent = t('pendingBannerText')(n);
   banner.classList.remove('hidden');
 }
-function jumpToPending(){ setTab('history'); setFilter('all'); }
+function jumpToPending(){ setTab('history'); toggleAllFilter(); }
 
 /* ================= STATUS ================= */
 function renderStatus(){
