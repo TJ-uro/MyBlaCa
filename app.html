@@ -54,6 +54,21 @@
   .tag-primary{background:var(--primary-dark);}
   .tag-pending{background:var(--accent);}
   .tag-recurrence{background:var(--danger);}
+  .tag-symptoms{background:#5E8A3A;}
+  .tag-side_effect{background:#B5523B;}
+  .tl-symptoms .tlDot{background:#5E8A3A;}
+  .tl-side_effect .tlDot{background:#B5523B;}
+  .tlPie{width:16px;height:16px;border-radius:50%;margin:0 auto 5px;box-shadow:0 0 0 2px var(--line);}
+  .tlBar{position:absolute;top:3px;height:10px;border-radius:5px;z-index:0;}
+  .tlBar.bcg{background-color:rgba(74,111,165,0.4);}
+  .tlBar.chemo{background-color:rgba(138,107,176,0.4);}
+  .tlBar.ongoing{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.6) 0 4px,transparent 4px 8px);}
+  .tlBar.early{border-right:5px solid var(--danger);}
+  .symChip{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+  .seriesRow{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:0.86rem;}
+  .seriesRow:last-child{border-bottom:none;}
+  .seriesRow small{display:block;color:var(--ink-soft);font-size:0.76rem;}
+  .seriesRow b{text-align:right;}
   .timelineH{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 0;scrollbar-width:thin;}
   .tlLane{display:flex;align-items:center;border-bottom:1px solid var(--line);padding:14px 0;}
   .tlLane:last-child{border-bottom:none;}
@@ -250,6 +265,8 @@
         <button data-f="office_cystoscopy" onclick="toggleTypeFilter('office_cystoscopy')" data-i18n="tag_office_cystoscopy">Cystoscopy</button>
         <button data-f="instillation" onclick="toggleTypeFilter('instillation')" data-i18n="tag_instillation">Instillation</button>
         <button data-f="surgery" onclick="toggleTypeFilter('surgery')" data-i18n="tag_surgery">Surgery</button>
+        <button data-f="symptoms" onclick="toggleTypeFilter('symptoms')" data-i18n="tag_symptoms">Symptoms</button>
+        <button data-f="side_effect" onclick="toggleTypeFilter('side_effect')" data-i18n="tag_side_effect">Side effect</button>
         <button data-f="recurrenceOnly" onclick="toggleRecurrenceFilter()" data-i18n="filterRecurrence">Recurrences only</button>
       </div>
       <div id="tableViewWrap" class="tableWrap">
@@ -275,6 +292,8 @@
     <div class="card">
       <h2 data-i18n="statusTitle">Current status</h2>
       <div id="statusBox"></div>
+      <h3 data-i18n="seriesTitle">Instillation series</h3>
+      <div id="seriesBox"></div>
       <h3 data-i18n="scheduleTitle">Recommended follow-up schedule</h3>
       <div class="schedBox" id="scheduleBox"></div>
       <p class="disclaimer" data-i18n="scheduleDisclaimer">General orientation based on EAU guidelines — not a substitute for your doctor's advice.</p>
@@ -791,6 +810,16 @@ footerNote:"Ta aplikacja nie łączy się z internetem ani nie wysyła żadnych 
 guideLinkText:"📖 Instrukcja obsługi i pomoc w instalacji"
 });
 
+/* i18n: instillation series, symptoms, side effects */
+const I18N_EXT = {
+en:{"type_symptoms": "Symptom check after instillation", "type_side_effect": "Side effect of treatment", "tag_symptoms": "Symptoms", "tag_side_effect": "Side effect", "phaseLabel": "Phase of treatment", "phase_single": "Single post-op dose", "phase_induction": "Induction", "phase_maintenance": "Maintenance", "phase_other": "Other / not sure", "seriesEndLabel": "Last instillation of this series?", "endReasonLabel": "Why did the series end?", "end_completed": "Completed as planned", "end_side_effects": "Side effects", "end_recurrence": "Recurrence", "end_shortage": "Drug shortage", "end_patient": "My own decision", "end_other": "Other reason", "doseLabel": "Dose", "seriesTitle": "Instillation series", "seriesOngoing": "Ongoing", "seriesEnded": "Ended", "seriesDoses": "doses", "noSeries": "No instillations recorded yet.", "endSeriesButton": "Mark as last instillation of the series", "reopenSeriesButton": "Undo end of series", "relatedInstLabel": "Related instillation", "sym_dysuria": "Burning or pain when passing urine", "sym_frequency": "Frequent or urgent urination", "sym_hematuria": "Blood in urine", "sym_fever": "Fever or chills", "sym_fatigue": "Tiredness, feeling unwell", "sym_joint": "Joint pain", "symScore_0": "None", "symScore_1": "Mild", "symScore_2": "Moderate", "symScore_3": "Severe", "symptomsHint": "Rate how you have felt in the days after the instillation.", "symptomsWarning": "Fever above 38.5 °C, or severe or worsening symptoms after a BCG instillation: contact your urology clinic.", "symptomsNone": "No symptoms", "seKindLabel": "What happened?", "se_cystitis": "Bladder irritation (burning, frequency)", "se_hematuria": "Blood in urine", "se_uti": "Urinary tract infection", "se_fever": "Fever above 38.5 °C", "se_systemic": "General reaction / BCG infection", "se_arthralgia": "Joint pain or arthritis", "se_allergy": "Allergic reaction or rash", "se_other": "Other", "seSeverityLabel": "Consequence", "sev_mild": "Mild, no treatment needed", "sev_treated": "Needed medication", "sev_postponed": "Next instillation postponed", "sev_stopped": "Treatment stopped", "sev_hospital": "Hospital admission", "rateSymptomsButton": "Rate symptoms", "reportSideEffectButton": "Report side effect", "st_instillations": "Instillations", "st_lastSymptoms": "Last symptom check", "st_sideEffects": "Side effects recorded", "seriesDose1": "dose", "seriesOne": "Series"},
+de:{"type_symptoms": "Beschwerden nach Instillation", "type_side_effect": "Nebenwirkung der Behandlung", "tag_symptoms": "Beschwerden", "tag_side_effect": "Nebenwirkung", "phaseLabel": "Behandlungsphase", "phase_single": "Einmalige Frühinstillation nach OP", "phase_induction": "Induktion", "phase_maintenance": "Erhaltung", "phase_other": "Andere / unsicher", "seriesEndLabel": "Letzte Instillation dieser Serie?", "endReasonLabel": "Warum wurde die Serie beendet?", "end_completed": "Wie geplant abgeschlossen", "end_side_effects": "Nebenwirkungen", "end_recurrence": "Rezidiv", "end_shortage": "Lieferengpass", "end_patient": "Eigene Entscheidung", "end_other": "Anderer Grund", "doseLabel": "Gabe", "seriesTitle": "Instillationsserien", "seriesOngoing": "Laufend", "seriesEnded": "Beendet", "seriesDoses": "Gaben", "noSeries": "Noch keine Instillationen erfasst.", "endSeriesButton": "Als letzte Instillation der Serie markieren", "reopenSeriesButton": "Serienende rückgängig machen", "relatedInstLabel": "Betrifft Instillation", "sym_dysuria": "Brennen oder Schmerzen beim Wasserlassen", "sym_frequency": "Häufiger oder plötzlicher Harndrang", "sym_hematuria": "Blut im Urin", "sym_fever": "Fieber oder Schüttelfrost", "sym_fatigue": "Müdigkeit, Krankheitsgefühl", "sym_joint": "Gelenkschmerzen", "symScore_0": "Keine", "symScore_1": "Leicht", "symScore_2": "Mäßig", "symScore_3": "Stark", "symptomsHint": "Bewerten Sie, wie es Ihnen in den Tagen nach der Instillation ging.", "symptomsWarning": "Fieber über 38,5 °C oder starke bzw. zunehmende Beschwerden nach einer BCG-Instillation: Wenden Sie sich an Ihre urologische Praxis oder Klinik.", "symptomsNone": "Keine Beschwerden", "seKindLabel": "Was ist passiert?", "se_cystitis": "Blasenreizung (Brennen, Harndrang)", "se_hematuria": "Blut im Urin", "se_uti": "Harnwegsinfekt", "se_fever": "Fieber über 38,5 °C", "se_systemic": "Allgemeinreaktion / BCG-Infektion", "se_arthralgia": "Gelenkschmerzen oder -entzündung", "se_allergy": "Allergische Reaktion oder Ausschlag", "se_other": "Sonstiges", "seSeverityLabel": "Folge", "sev_mild": "Leicht, keine Behandlung", "sev_treated": "Medikamente nötig", "sev_postponed": "Nächste Instillation verschoben", "sev_stopped": "Behandlung abgebrochen", "sev_hospital": "Krankenhausaufnahme", "rateSymptomsButton": "Beschwerden bewerten", "reportSideEffectButton": "Nebenwirkung erfassen", "st_instillations": "Instillationen", "st_lastSymptoms": "Letzte Beschwerdebewertung", "st_sideEffects": "Erfasste Nebenwirkungen", "seriesDose1": "Gabe", "seriesOne": "Serie"},
+fr:{"type_symptoms": "Évaluation des symptômes après instillation", "type_side_effect": "Effet indésirable du traitement", "tag_symptoms": "Symptômes", "tag_side_effect": "Effet indésirable", "phaseLabel": "Phase du traitement", "phase_single": "Instillation unique post-opératoire", "phase_induction": "Induction", "phase_maintenance": "Entretien", "phase_other": "Autre / je ne sais pas", "seriesEndLabel": "Dernière instillation de la série ?", "endReasonLabel": "Pourquoi la série s'est-elle arrêtée ?", "end_completed": "Terminée comme prévu", "end_side_effects": "Effets indésirables", "end_recurrence": "Récidive", "end_shortage": "Pénurie de médicament", "end_patient": "Ma propre décision", "end_other": "Autre raison", "doseLabel": "Dose", "seriesTitle": "Séries d'instillations", "seriesOngoing": "En cours", "seriesEnded": "Terminée", "seriesDoses": "doses", "noSeries": "Aucune instillation enregistrée.", "endSeriesButton": "Marquer comme dernière instillation de la série", "reopenSeriesButton": "Annuler la fin de série", "relatedInstLabel": "Instillation concernée", "sym_dysuria": "Brûlure ou douleur en urinant", "sym_frequency": "Envies fréquentes ou pressantes", "sym_hematuria": "Sang dans les urines", "sym_fever": "Fièvre ou frissons", "sym_fatigue": "Fatigue, malaise", "sym_joint": "Douleurs articulaires", "symScore_0": "Aucun", "symScore_1": "Léger", "symScore_2": "Modéré", "symScore_3": "Sévère", "symptomsHint": "Évaluez comment vous vous êtes senti(e) les jours suivant l'instillation.", "symptomsWarning": "Fièvre au-dessus de 38,5 °C, ou symptômes sévères ou qui s'aggravent après une instillation de BCG : contactez votre service d'urologie.", "symptomsNone": "Aucun symptôme", "seKindLabel": "Que s'est-il passé ?", "se_cystitis": "Irritation de la vessie (brûlures, envies fréquentes)", "se_hematuria": "Sang dans les urines", "se_uti": "Infection urinaire", "se_fever": "Fièvre au-dessus de 38,5 °C", "se_systemic": "Réaction générale / infection à BCG", "se_arthralgia": "Douleurs ou inflammation articulaires", "se_allergy": "Réaction allergique ou éruption", "se_other": "Autre", "seSeverityLabel": "Conséquence", "sev_mild": "Léger, sans traitement", "sev_treated": "Médicaments nécessaires", "sev_postponed": "Instillation suivante reportée", "sev_stopped": "Traitement arrêté", "sev_hospital": "Hospitalisation", "rateSymptomsButton": "Évaluer les symptômes", "reportSideEffectButton": "Signaler un effet indésirable", "st_instillations": "Instillations", "st_lastSymptoms": "Dernière évaluation des symptômes", "st_sideEffects": "Effets indésirables enregistrés", "seriesDose1": "dose", "seriesOne": "Série"},
+es:{"type_symptoms": "Valoración de síntomas tras la instilación", "type_side_effect": "Efecto adverso del tratamiento", "tag_symptoms": "Síntomas", "tag_side_effect": "Efecto adverso", "phaseLabel": "Fase del tratamiento", "phase_single": "Instilación única posoperatoria", "phase_induction": "Inducción", "phase_maintenance": "Mantenimiento", "phase_other": "Otra / no lo sé", "seriesEndLabel": "¿Última instilación de esta serie?", "endReasonLabel": "¿Por qué terminó la serie?", "end_completed": "Completada según lo previsto", "end_side_effects": "Efectos adversos", "end_recurrence": "Recidiva", "end_shortage": "Falta del medicamento", "end_patient": "Decisión propia", "end_other": "Otro motivo", "doseLabel": "Dosis", "seriesTitle": "Series de instilaciones", "seriesOngoing": "En curso", "seriesEnded": "Terminada", "seriesDoses": "dosis", "noSeries": "Aún no hay instilaciones registradas.", "endSeriesButton": "Marcar como última instilación de la serie", "reopenSeriesButton": "Deshacer fin de serie", "relatedInstLabel": "Instilación relacionada", "sym_dysuria": "Escozor o dolor al orinar", "sym_frequency": "Necesidad frecuente o urgente de orinar", "sym_hematuria": "Sangre en la orina", "sym_fever": "Fiebre o escalofríos", "sym_fatigue": "Cansancio, malestar general", "sym_joint": "Dolor articular", "symScore_0": "Ninguno", "symScore_1": "Leve", "symScore_2": "Moderado", "symScore_3": "Intenso", "symptomsHint": "Valore cómo se ha sentido en los días posteriores a la instilación.", "symptomsWarning": "Fiebre de más de 38,5 °C, o síntomas intensos o que empeoran tras una instilación de BCG: contacte con su servicio de urología.", "symptomsNone": "Sin síntomas", "seKindLabel": "¿Qué ocurrió?", "se_cystitis": "Irritación de la vejiga (escozor, frecuencia)", "se_hematuria": "Sangre en la orina", "se_uti": "Infección urinaria", "se_fever": "Fiebre de más de 38,5 °C", "se_systemic": "Reacción general / infección por BCG", "se_arthralgia": "Dolor o inflamación articular", "se_allergy": "Reacción alérgica o erupción", "se_other": "Otro", "seSeverityLabel": "Consecuencia", "sev_mild": "Leve, sin tratamiento", "sev_treated": "Necesitó medicación", "sev_postponed": "Se aplazó la siguiente instilación", "sev_stopped": "Se suspendió el tratamiento", "sev_hospital": "Ingreso hospitalario", "rateSymptomsButton": "Valorar síntomas", "reportSideEffectButton": "Registrar efecto adverso", "st_instillations": "Instilaciones", "st_lastSymptoms": "Última valoración de síntomas", "st_sideEffects": "Efectos adversos registrados", "seriesDose1": "dosis", "seriesOne": "Serie"},
+sv:{"type_symptoms": "Symtomskattning efter instillation", "type_side_effect": "Biverkning av behandling", "tag_symptoms": "Symtom", "tag_side_effect": "Biverkning", "phaseLabel": "Behandlingsfas", "phase_single": "Engångsinstillation efter operation", "phase_induction": "Induktion", "phase_maintenance": "Underhåll", "phase_other": "Annat / vet ej", "seriesEndLabel": "Sista instillationen i serien?", "endReasonLabel": "Varför avslutades serien?", "end_completed": "Genomförd enligt plan", "end_side_effects": "Biverkningar", "end_recurrence": "Återfall", "end_shortage": "Läkemedelsbrist", "end_patient": "Mitt eget beslut", "end_other": "Annan orsak", "doseLabel": "Dos", "seriesTitle": "Instillationsserier", "seriesOngoing": "Pågående", "seriesEnded": "Avslutad", "seriesDoses": "doser", "noSeries": "Inga instillationer registrerade ännu.", "endSeriesButton": "Markera som seriens sista instillation", "reopenSeriesButton": "Ångra avslutad serie", "relatedInstLabel": "Gäller instillation", "sym_dysuria": "Sveda eller smärta vid vattenkastning", "sym_frequency": "Täta eller plötsliga trängningar", "sym_hematuria": "Blod i urinen", "sym_fever": "Feber eller frossa", "sym_fatigue": "Trötthet, sjukdomskänsla", "sym_joint": "Ledvärk", "symScore_0": "Inga", "symScore_1": "Lätta", "symScore_2": "Måttliga", "symScore_3": "Svåra", "symptomsHint": "Skatta hur du har mått dagarna efter instillationen.", "symptomsWarning": "Feber över 38,5 °C eller svåra eller tilltagande besvär efter en BCG-instillation: kontakta din urologmottagning.", "symptomsNone": "Inga symtom", "seKindLabel": "Vad hände?", "se_cystitis": "Irritation i blåsan (sveda, täta trängningar)", "se_hematuria": "Blod i urinen", "se_uti": "Urinvägsinfektion", "se_fever": "Feber över 38,5 °C", "se_systemic": "Allmän reaktion / BCG-infektion", "se_arthralgia": "Ledvärk eller ledinflammation", "se_allergy": "Allergisk reaktion eller utslag", "se_other": "Annat", "seSeverityLabel": "Följd", "sev_mild": "Lindrig, ingen behandling", "sev_treated": "Krävde läkemedel", "sev_postponed": "Nästa instillation sköts upp", "sev_stopped": "Behandlingen avbröts", "sev_hospital": "Sjukhusvård", "rateSymptomsButton": "Skatta symtom", "reportSideEffectButton": "Rapportera biverkning", "st_instillations": "Instillationer", "st_lastSymptoms": "Senaste symtomskattning", "st_sideEffects": "Registrerade biverkningar", "seriesDose1": "dos", "seriesOne": "Serie"},
+pl:{"type_symptoms": "Ocena objawów po wlewce", "type_side_effect": "Skutek uboczny leczenia", "tag_symptoms": "Objawy", "tag_side_effect": "Skutek uboczny", "phaseLabel": "Etap leczenia", "phase_single": "Pojedyncza wlewka pooperacyjna", "phase_induction": "Indukcja", "phase_maintenance": "Podtrzymanie", "phase_other": "Inne / nie wiem", "seriesEndLabel": "Ostatnia wlewka tej serii?", "endReasonLabel": "Dlaczego seria się zakończyła?", "end_completed": "Ukończona zgodnie z planem", "end_side_effects": "Skutki uboczne", "end_recurrence": "Wznowa", "end_shortage": "Brak leku", "end_patient": "Moja decyzja", "end_other": "Inny powód", "doseLabel": "Wlewka", "seriesTitle": "Serie wlewek", "seriesOngoing": "W trakcie", "seriesEnded": "Zakończona", "seriesDoses": "wlewek", "noSeries": "Brak zapisanych wlewek.", "endSeriesButton": "Oznacz jako ostatnią wlewkę serii", "reopenSeriesButton": "Cofnij zakończenie serii", "relatedInstLabel": "Dotyczy wlewki", "sym_dysuria": "Pieczenie lub ból przy oddawaniu moczu", "sym_frequency": "Częste lub nagłe parcie na mocz", "sym_hematuria": "Krew w moczu", "sym_fever": "Gorączka lub dreszcze", "sym_fatigue": "Zmęczenie, złe samopoczucie", "sym_joint": "Bóle stawów", "symScore_0": "Brak", "symScore_1": "Łagodne", "symScore_2": "Umiarkowane", "symScore_3": "Silne", "symptomsHint": "Oceń, jak się czułeś(-aś) w dniach po wlewce.", "symptomsWarning": "Gorączka powyżej 38,5 °C albo silne lub narastające objawy po wlewce BCG: skontaktuj się z oddziałem lub poradnią urologiczną.", "symptomsNone": "Brak objawów", "seKindLabel": "Co się stało?", "se_cystitis": "Podrażnienie pęcherza (pieczenie, częstomocz)", "se_hematuria": "Krew w moczu", "se_uti": "Zakażenie układu moczowego", "se_fever": "Gorączka powyżej 38,5 °C", "se_systemic": "Reakcja ogólna / zakażenie BCG", "se_arthralgia": "Bóle lub zapalenie stawów", "se_allergy": "Reakcja alergiczna lub wysypka", "se_other": "Inne", "seSeverityLabel": "Skutek", "sev_mild": "Łagodny, bez leczenia", "sev_treated": "Wymagał leków", "sev_postponed": "Przełożono kolejną wlewkę", "sev_stopped": "Przerwano leczenie", "sev_hospital": "Pobyt w szpitalu", "rateSymptomsButton": "Oceń objawy", "reportSideEffectButton": "Zgłoś skutek uboczny", "st_instillations": "Wlewki", "st_lastSymptoms": "Ostatnia ocena objawów", "st_sideEffects": "Zapisane skutki uboczne", "seriesDose1": "wlewka", "seriesOne": "Seria", "seriesDosesFew": "wlewki"}
+};
+for(const l in I18N_EXT){ if(I18N[l]) Object.assign(I18N[l], I18N_EXT[l]); }
 const SUPPORTED_LANGS = ['en','de','fr','es','sv','pl'];
 const STORAGE_LANG_KEY = 'myblaca_lang';
 
@@ -822,7 +851,131 @@ const T_STAGES_RESULT = ['t0','ta','t1m','t1e','tis','t2'];
 const G1_OPTS = ['g1','g2','g3'];
 const G2_OPTS = ['lg','hg'];
 const RISK_GROUPS = ['low','intermediate','high','very_high'];
-const EVENT_TYPES = ['urine_test','office_cystoscopy','instillation','surgery'];
+const EVENT_TYPES = ['urine_test','office_cystoscopy','instillation','surgery','symptoms','side_effect'];
+/* ================= INSTILLATION SERIES, SYMPTOMS, SIDE EFFECTS ================= */
+const INST_PHASES = ['single','induction','maintenance','other'];
+const END_REASONS = ['completed','side_effects','recurrence','shortage','patient','other'];
+const SYMPTOM_ITEMS = ['dysuria','frequency','hematuria','fever','fatigue','joint'];
+const SE_KINDS = ['cystitis','hematuria','uti','fever','systemic','arthralgia','allergy','other'];
+const SE_SEVERITY = ['mild','treated','postponed','stopped','hospital'];
+const SYM_COLORS = ['#5FA36A','#E2C044','#E58A3A','#C8483D'];
+const SERIES_GAP_DAYS = 45; // a longer pause between doses starts a new series
+
+// Groups instillations into series: same drug + same phase, no gap > SERIES_GAP_DAYS,
+// and a series closes at a dose marked as its last one. A single post-op dose is its own series.
+function computeSeries(){
+  const inst = data.events.filter(e=>e.type==='instillation').sort((a,b)=> a.date.localeCompare(b.date) || (a.id-b.id));
+  const series = []; let cur = null;
+  inst.forEach(e=>{
+    const phase = e.phase || '';
+    const gap = cur ? (new Date(e.date) - new Date(cur.last.date))/86400000 : Infinity;
+    if(!cur || cur.ended || e.instType!==cur.instType || phase!==cur.phase || gap>SERIES_GAP_DAYS || phase==='single'){
+      cur = {instType:e.instType, phase, events:[], ended:false, endReason:''};
+      series.push(cur);
+    }
+    cur.events.push(e); cur.last = e;
+    if(phase==='single'){ cur.ended = true; }
+    if(e.seriesEnd==='yes'){ cur.ended = true; cur.endReason = e.endReason || ''; }
+  });
+  return series;
+}
+function seriesForEvent(id){
+  return computeSeries().find(s=> s.events.some(e=> String(e.id)===String(id))) || null;
+}
+function dosesText(n){
+  if(n===1) return n+' '+t('seriesDose1');
+  const few = t('seriesDosesFew');
+  if(few!=='seriesDosesFew' && n%10>=2 && n%10<=4 && !(n%100>=12 && n%100<=14)) return n+' '+few;
+  return n+' '+t('seriesDoses');
+}
+function seriesLabel(s){
+  return t('inst_'+s.instType) + (s.phase ? ' · '+t('phase_'+s.phase) : '');
+}
+function seriesStatusText(s){
+  if(!s.ended) return t('seriesOngoing');
+  return t('seriesEnded') + (s.endReason ? ': '+t('end_'+s.endReason) : '');
+}
+function seriesDateRange(s){
+  const a = s.events[0].date, b = s.last.date;
+  return a===b ? fmtDate(a) : fmtDate(a)+' – '+fmtDate(b);
+}
+function instLabel(ev){
+  return fmtDate(ev.date)+' · '+t('inst_'+ev.instType)+(ev.phase?' · '+t('phase_'+ev.phase):'');
+}
+function relatedInstText(ev){
+  if(!ev.relatedId) return '';
+  const r = data.events.find(e=> String(e.id)===String(ev.relatedId));
+  return r ? instLabel(r) : '';
+}
+function symMax(ev){
+  const vals = SYMPTOM_ITEMS.map(k=> (ev.scores && ev.scores[k]!=null) ? ev.scores[k] : 0);
+  return Math.max(0, ...vals);
+}
+function symPieHTML(ev){
+  const step = 360/SYMPTOM_ITEMS.length;
+  const stops = SYMPTOM_ITEMS.map((k,i)=>{
+    const v = ev.scores && ev.scores[k]!=null ? ev.scores[k] : null;
+    const c = v==null ? '#CFC8BC' : SYM_COLORS[v];
+    return `${c} ${i*step}deg ${(i+1)*step}deg`;
+  }).join(',');
+  return `<div class="tlPie" style="background:conic-gradient(${stops})"></div>`;
+}
+function symptomsSummary(ev){
+  const items = SYMPTOM_ITEMS.map(k=>({k, v:(ev.scores&&ev.scores[k])||0})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+  if(items.length===0) return t('symptomsNone');
+  return items.map(x=> `${t('sym_'+x.k)}: ${t('symScore_'+x.v).toLowerCase()}`).join(' · ');
+}
+let pendingRelatedId = null;
+function fillRelatedInst(id){
+  const el = document.getElementById(id); if(!el) return;
+  const inst = data.events.filter(e=>e.type==='instillation').sort((a,b)=> b.date.localeCompare(a.date)).slice(0,40);
+  el.innerHTML = `<option value="">${t('attachNoneOption')}</option>` + inst.map(e=>`<option value="${e.id}">${instLabel(e)}</option>`).join('');
+  el.value = pendingRelatedId!=null ? String(pendingRelatedId) : (inst[0] ? String(inst[0].id) : '');
+}
+function startLinkedEvent(type, relatedId){
+  closeEventDetail();
+  pendingRelatedId = relatedId;
+  setTab('add');
+  document.getElementById('ev_type').value = type;
+  renderEventFields();
+  pendingRelatedId = null;
+  window.scrollTo(0,0);
+}
+function prefillPhase(){
+  const all = computeSeries();
+  const s = all[all.length-1];
+  const typeEl = document.getElementById('ev_instType');
+  const phEl = document.getElementById('ev_phase');
+  if(s && !s.ended){
+    if(!typeEl.value) typeEl.value = s.instType;
+    if(typeEl.value===s.instType && !phEl.value) phEl.value = s.phase;
+  }
+  onPhaseChange();
+}
+function onPhaseChange(){
+  const single = document.getElementById('ev_phase').value==='single';
+  document.getElementById('ev_seriesEndWrap').classList.toggle('hidden', single);
+}
+function onSeriesEndChange(){
+  document.getElementById('ev_endReasonWrap').classList.toggle('hidden', document.getElementById('ev_seriesEnd').value!=='yes');
+}
+function endSeriesAt(id){
+  const ev = data.events.find(e=> String(e.id)===String(id)); if(!ev) return;
+  ev.seriesEnd = 'yes';
+  ev.endReason = document.getElementById('md_endReason').value || 'completed';
+  saveData(); renderHistory(); renderStatus(); openEventDetail(ev.id);
+}
+function reopenSeriesAt(id){
+  const ev = data.events.find(e=> String(e.id)===String(id)); if(!ev) return;
+  delete ev.seriesEnd; delete ev.endReason;
+  saveData(); renderHistory(); renderStatus(); openEventDetail(ev.id);
+}
+function seriesStatusHTML(){
+  const all = computeSeries();
+  if(all.length===0) return `<p class="empty">${t('noSeries')}</p>`;
+  return [...all].reverse().map(s=>`<div class="seriesRow"><span>${seriesLabel(s)}<small>${seriesDateRange(s)}</small></span><b>${dosesText(s.events.length)}<small>${seriesStatusText(s)}</small></b></div>`).join('');
+}
+
 
 /* ================= DATA ================= */
 const STORAGE_KEY = 'myblaca_data_v1';
@@ -1020,8 +1173,42 @@ function renderEventFields(){
     fillSelect('ev_recAction', ['biopsy','fulguration','surveillance','surgery_scheduled'], 'rec_');
     fillSelect('ev_paris', ['pending','nondiagnostic','negative','atypical','suspicious','hguc','other'], 'paris_');
   } else if(type==='instillation'){
-    box.innerHTML = `<div class="row"><div class="field"><label>${t('instillationTypeLabel')}</label><select id="ev_instType"></select></div></div>`;
+    box.innerHTML = `
+      <div class="row">
+        <div class="field"><label>${t('instillationTypeLabel')}</label><select id="ev_instType" onchange="prefillPhase()"></select></div>
+        <div class="field"><label>${t('phaseLabel')}</label><select id="ev_phase" onchange="onPhaseChange()"></select></div>
+      </div>
+      <div class="row" id="ev_seriesEndWrap">
+        <div class="field"><label>${t('seriesEndLabel')}</label><select id="ev_seriesEnd" onchange="onSeriesEndChange()"></select></div>
+        <div class="field hidden" id="ev_endReasonWrap"><label>${t('endReasonLabel')}</label><select id="ev_endReason"></select></div>
+      </div>`;
     fillSelect('ev_instType', ['chemo','bcg'], 'inst_');
+    fillSelect('ev_phase', INST_PHASES, 'phase_');
+    fillSelectYN('ev_seriesEnd');
+    fillSelect('ev_endReason', END_REASONS, 'end_', false);
+    document.getElementById('ev_endReason').value = 'completed';
+    prefillPhase();
+  } else if(type==='symptoms'){
+    const pairs = [];
+    for(let i=0;i<SYMPTOM_ITEMS.length;i+=2) pairs.push(SYMPTOM_ITEMS.slice(i,i+2));
+    box.innerHTML = `
+      <p class="disclaimer" style="margin-top:0">${t('symptomsHint')}</p>
+      <div class="row"><div class="field"><label>${t('relatedInstLabel')}</label><select id="ev_related"></select></div></div>
+      ${pairs.map(p=>`<div class="row">${p.map(k=>`<div class="field"><label>${t('sym_'+k)}</label><select id="ev_sym_${k}"></select></div>`).join('')}</div>`).join('')}
+      <p class="schedBox" style="margin:4px 0 10px">${t('symptomsWarning')}</p>`;
+    fillRelatedInst('ev_related');
+    SYMPTOM_ITEMS.forEach(k=>{ fillSelect('ev_sym_'+k, ['0','1','2','3'], 'symScore_', false); document.getElementById('ev_sym_'+k).value='0'; });
+  } else if(type==='side_effect'){
+    box.innerHTML = `
+      <div class="row"><div class="field"><label>${t('relatedInstLabel')}</label><select id="ev_related"></select></div></div>
+      <div class="row">
+        <div class="field"><label>${t('seKindLabel')}</label><select id="ev_seKind"></select></div>
+        <div class="field"><label>${t('seSeverityLabel')}</label><select id="ev_seSeverity"></select></div>
+      </div>
+      <p class="schedBox" style="margin:4px 0 10px">${t('symptomsWarning')}</p>`;
+    fillRelatedInst('ev_related');
+    fillSelect('ev_seKind', SE_KINDS, 'se_');
+    fillSelect('ev_seSeverity', SE_SEVERITY, 'sev_');
   } else if(type==='surgery'){
     box.innerHTML = `
       <div class="row"><div class="field"><label>${t('surgeryTypeLabel')}</label><select id="ev_surgType" onchange="onSurgTypeChange()"></select></div></div>
@@ -1100,6 +1287,19 @@ function addEvent(){
     }
   } else if(type==='instillation'){
     ev.instType = document.getElementById('ev_instType').value;
+    ev.phase = document.getElementById('ev_phase').value;
+    if(ev.phase!=='single' && document.getElementById('ev_seriesEnd').value==='yes'){
+      ev.seriesEnd = 'yes';
+      ev.endReason = document.getElementById('ev_endReason').value || 'completed';
+    }
+  } else if(type==='symptoms'){
+    ev.relatedId = document.getElementById('ev_related').value || null;
+    ev.scores = {};
+    SYMPTOM_ITEMS.forEach(k=>{ ev.scores[k] = parseInt(document.getElementById('ev_sym_'+k).value||'0',10); });
+  } else if(type==='side_effect'){
+    ev.relatedId = document.getElementById('ev_related').value || null;
+    ev.seKind = document.getElementById('ev_seKind').value;
+    ev.seSeverity = document.getElementById('ev_seSeverity').value;
   } else if(type==='surgery'){
     ev.surgType = document.getElementById('ev_surgType').value;
     if(ev.surgType==='turb' || ev.surgType==='cystoscopy_biopsy'){
@@ -1160,6 +1360,15 @@ function eventSummary(ev){
     lines.push(t('recurrenceLabel')+' '+(ev.recurrence==='yes'?t('yes'):t('no')));
   } else if(ev.type==='instillation'){
     lines.push(t('inst_'+ev.instType));
+    if(ev.phase) lines.push(t('phase_'+ev.phase));
+    const s = seriesForEvent(ev.id);
+    if(s && ev.phase!=='single' && s.events.length>1) lines.push(t('doseLabel')+' '+(s.events.findIndex(x=>x.id===ev.id)+1));
+    if(ev.seriesEnd==='yes') lines.push(t('seriesEnded')+(ev.endReason?': '+t('end_'+ev.endReason):''));
+  } else if(ev.type==='symptoms'){
+    lines.push(symptomsSummary(ev));
+  } else if(ev.type==='side_effect'){
+    if(ev.seKind) lines.push(t('se_'+ev.seKind));
+    if(ev.seSeverity) lines.push(t('sev_'+ev.seSeverity));
   } else if(ev.type==='surgery'){
     lines.push(t('surg_'+ev.surgType));
     if(ev.surgType==='turb'||ev.surgType==='cystoscopy_biopsy'){
@@ -1192,6 +1401,22 @@ function eventDetailHTML(ev){
     }
   } else if(ev.type==='instillation'){
     add(t('instillationTypeLabel'), t('inst_'+ev.instType));
+    add(t('phaseLabel'), ev.phase ? t('phase_'+ev.phase) : '');
+    const s = seriesForEvent(ev.id);
+    if(s){
+      if(ev.phase!=='single' && s.events.length>1) add(t('doseLabel'), `${s.events.findIndex(x=>x.id===ev.id)+1} / ${s.events.length}`);
+      add(t('seriesOne'), `${seriesDateRange(s)} · ${seriesStatusText(s)}`);
+    }
+  } else if(ev.type==='symptoms'){
+    add(t('relatedInstLabel'), relatedInstText(ev));
+    SYMPTOM_ITEMS.forEach(k=>{
+      const v = (ev.scores && ev.scores[k]!=null) ? ev.scores[k] : 0;
+      add(t('sym_'+k), `<span class="symChip" style="background:${SYM_COLORS[v]}"></span>${t('symScore_'+v)}`);
+    });
+  } else if(ev.type==='side_effect'){
+    add(t('relatedInstLabel'), relatedInstText(ev));
+    add(t('seKindLabel'), ev.seKind ? t('se_'+ev.seKind) : '');
+    add(t('seSeverityLabel'), ev.seSeverity ? t('sev_'+ev.seSeverity) : '');
   } else if(ev.type==='surgery'){
     add(t('surgeryTypeLabel'), t('surg_'+ev.surgType));
     if(ev.surgType==='turb'||ev.surgType==='cystoscopy_biopsy'){
@@ -1269,6 +1494,19 @@ function openEventDetail(id){
   const actions = document.getElementById('detailModalActions');
   let html = '';
   if(ev.pending) html += `<button class="btn-ghost" style="flex:1" onclick="completeEvent(${ev.id});closeEventDetail();">${t('completeButton')}</button>`;
+  if(ev.type==='instillation'){
+    html += `<button class="btn-ghost" style="flex:1" onclick="startLinkedEvent('symptoms',${ev.id})">${t('rateSymptomsButton')}</button>`;
+    html += `<button class="btn-ghost" style="flex:1" onclick="startLinkedEvent('side_effect',${ev.id})">${t('reportSideEffectButton')}</button>`;
+    const s = seriesForEvent(ev.id);
+    const body = document.getElementById('detailModalBody');
+    if(ev.seriesEnd==='yes'){
+      body.insertAdjacentHTML('beforeend', `<button class="btn-secondary btn-block" style="margin-top:10px" onclick="reopenSeriesAt(${ev.id})">${t('reopenSeriesButton')}</button>`);
+    } else if(s && !s.ended && s.last.id===ev.id && ev.phase!=='single'){
+      body.insertAdjacentHTML('beforeend', `<div class="row" style="margin-top:10px"><div class="field"><label>${t('endReasonLabel')}</label><select id="md_endReason"></select></div></div><button class="btn-secondary btn-block" onclick="endSeriesAt(${ev.id})">${t('endSeriesButton')}</button>`);
+      fillSelect('md_endReason', END_REASONS, 'end_', false);
+      document.getElementById('md_endReason').value = 'completed';
+    }
+  }
   html += `<button class="btn-danger" style="flex:1" onclick="deleteEvent(${ev.id});closeEventDetail();">${t('deleteButton')}</button>`;
   actions.innerHTML = html;
   document.getElementById('detailModal').classList.remove('hidden');
@@ -1339,9 +1577,9 @@ function renderTimeline(){
   const container = document.getElementById('timelineList');
   const items = getFilteredItems(); // newest-first
 
-  const laneOrder = ['primary','surgery','instillation','office_cystoscopy','urine_test'];
-  const laneLabelKey = {primary:'tag_primary', surgery:'tag_surgery', instillation:'tag_instillation', office_cystoscopy:'tag_office_cystoscopy', urine_test:'tag_urine_test'};
-  const groups = {primary:[], surgery:[], instillation:[], office_cystoscopy:[], urine_test:[]};
+  const laneOrder = ['primary','surgery','instillation','symptoms','side_effect','office_cystoscopy','urine_test'];
+  const laneLabelKey = {primary:'tag_primary', surgery:'tag_surgery', instillation:'tag_instillation', symptoms:'tag_symptoms', side_effect:'tag_side_effect', office_cystoscopy:'tag_office_cystoscopy', urine_test:'tag_urine_test'};
+  const groups = {primary:[], surgery:[], instillation:[], symptoms:[], side_effect:[], office_cystoscopy:[], urine_test:[]};
   items.forEach(e=>{
     const key = e.isPrimary ? 'primary' : e.type;
     if(groups[key]) groups[key].push(e);
@@ -1385,7 +1623,8 @@ function renderTimeline(){
     }
     const recBadge = isRecurrenceEvent(e) ? `<span class="tlBadge rec" title="${t('filterRecurrence')}"></span>` : '';
     const pendBadge = e.pending ? `<span class="tlBadge pend" title="${t('pendingBadge')}"></span>` : '';
-    return `<div class="tlNode tl-${e.type}" style="left:${left}px" onclick="openEventDetail(${e.id})" onmouseenter="showTlTooltip(event,'${e.id}')" onmouseleave="hideTlTooltip()"><div class="tlBadges">${recBadge}${pendBadge}</div><div class="tlDot"></div><div class="tlDate">${fmtDate(e.date)}</div></div>`;
+    const dot = e.type==='symptoms' ? symPieHTML(e) : '<div class="tlDot"></div>';
+    return `<div class="tlNode tl-${e.type}" style="left:${left}px" onclick="openEventDetail(${e.id})" onmouseenter="showTlTooltip(event,'${e.id}')" onmouseleave="hideTlTooltip()"><div class="tlBadges">${recBadge}${pendBadge}</div>${dot}<div class="tlDate">${fmtDate(e.date)}</div></div>`;
   };
 
   let anyItems = false;
@@ -1395,7 +1634,20 @@ function renderTimeline(){
     if(list.length===0) return;
     anyItems = true;
     const nodes = [...list].reverse().map(e=>laneNode(e,key)).join('');
-    rowsHtml += `<div class="tlLane"><div class="tlLaneLabel">${t(laneLabelKey[key])}</div><div class="tlLaneTrack" style="width:${trackWidth}px">${breakHTML}${nodes}</div></div>`;
+    let bars = '';
+    if(key==='instillation'){
+      // Each series of 2+ doses is drawn as a bar behind its dots (striped = ongoing, red end = stopped early).
+      const shown = new Set(list.map(e=>String(e.id)));
+      bars = computeSeries().filter(sr=> sr.events.length>1 && shown.has(String(sr.events[0].id)) && shown.has(String(sr.last.id))).map(sr=>{
+        const x1 = LEFT_PAD + dateX[new Date(sr.events[0].date).getTime()];
+        const x2 = LEFT_PAD + dateX[new Date(sr.last.date).getTime()];
+        const early = sr.ended && sr.endReason && sr.endReason!=='completed';
+        const cls = `tlBar ${sr.instType==='bcg'?'bcg':'chemo'}${sr.ended?'':' ongoing'}${early?' early':''}`;
+        const title = `${seriesLabel(sr)} · ${dosesText(sr.events.length)} · ${seriesStatusText(sr)}`.replace(/"/g,'&quot;');
+        return `<div class="${cls}" style="left:${x1-6}px;width:${Math.max(12,x2-x1+24)}px" title="${title}"></div>`;
+      }).join('');
+    }
+    rowsHtml += `<div class="tlLane"><div class="tlLaneLabel">${t(laneLabelKey[key])}</div><div class="tlLaneTrack" style="width:${trackWidth}px">${breakHTML}${bars}${nodes}</div></div>`;
   });
 
   if(!anyItems){ container.innerHTML = `<div class="empty">${t('timelineEmpty')}</div>`; return; }
@@ -1440,6 +1692,7 @@ function jumpToPending(){ setTab('history'); toggleAllFilter(); }
 function renderStatus(){
   const p = data.profile || {};
   const box = document.getElementById('statusBox');
+  document.getElementById('seriesBox').innerHTML = seriesStatusHTML();
   if(!p.diagDate){ box.innerHTML = `<p class="empty">${t('st_noProfile')}</p>`; document.getElementById('scheduleBox').innerHTML=''; return; }
 
   const recEvents = data.events.filter(isRecurrenceEvent);
@@ -1449,6 +1702,9 @@ function renderStatus(){
   const chemoCount = instEvents.filter(e=>e.instType==='chemo').length;
   const cystoDates = data.events.filter(e=>e.type==='office_cystoscopy'||e.type==='surgery').map(e=>e.date);
   const lastCysto = cystoDates.length ? cystoDates.reduce((a,b)=>a>b?a:b) : null;
+  const symEvents = data.events.filter(e=>e.type==='symptoms').sort((a,b)=>b.date.localeCompare(a.date));
+  const lastSym = symEvents[0] || null;
+  const seEvents = data.events.filter(e=>e.type==='side_effect');
 
   box.innerHTML = `
     <div class="statRow"><span>${t('st_diagDate')}</span><b>${fmtDate(p.diagDate)}</b></div>
@@ -1457,7 +1713,10 @@ function renderStatus(){
     <div class="statRow"><span>${t('st_lastRecurrence')}</span><b>${lastRec?fmtDate(lastRec):t('st_none')}</b></div>
     <div class="statRow"><span>${t('st_instillations')}</span><b>${bcgCount||chemoCount ? `BCG: ${bcgCount} · ${t('inst_chemo')}: ${chemoCount}` : t('st_none')}</b></div>
     <div class="statRow"><span>${t('st_lastCysto')}</span><b>${lastCysto?fmtDate(lastCysto):t('st_none')}</b></div>
+    <div class="statRow"><span>${t('st_lastSymptoms')}</span><b>${lastSym?fmtDate(lastSym.date)+' · '+symptomsSummary(lastSym):t('st_none')}</b></div>
+    <div class="statRow"><span>${t('st_sideEffects')}</span><b>${seEvents.length||t('st_none')}</b></div>
   `;
+  document.getElementById('seriesBox').innerHTML = seriesStatusHTML();
 
   const schedBox = document.getElementById('scheduleBox');
   if(p.location==='bladder' && p.riskGroup){
