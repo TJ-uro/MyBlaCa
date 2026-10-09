@@ -1579,7 +1579,7 @@ function openEventDetail(id){
   document.getElementById('detailModalBody').innerHTML = eventDetailHTML(ev);
   const actions = document.getElementById('detailModalActions');
   let html = '';
-  if(ev.pending) html += `<button class="btn-ghost" style="flex:1" onclick="completeEvent(${ev.id});closeEventDetail();">${t('completeButton')}</button>`;
+  if(ev.pending) html += `<button class="btn-ghost" style="flex:1" onclick="completeEvent(${ev.id})">${t('completeButton')}</button>`;
   if(ev.type==='instillation'){
     html += `<button class="btn-ghost" style="flex:1" onclick="startLinkedEvent('symptoms',${ev.id})">${t('rateSymptomsButton')}</button>`;
     html += `<button class="btn-ghost" style="flex:1" onclick="startLinkedEvent('side_effect',${ev.id})">${t('reportSideEffectButton')}</button>`;
@@ -1744,24 +1744,50 @@ function deleteEvent(id){
   data.events = data.events.filter(e=>e.id!==id);
   saveData(); renderHistory(); renderPendingBanner();
 }
-function completeEvent(id){
-  const ev = data.events.find(e=>e.id===id);
-  if(!ev) return;
-  const prefix = ev.type==='surgery' ? 'result' : 'result';
-  const tVal = prompt(t('resultTStageLabel')+' ('+T_STAGES_RESULT.map(c=>t('t_'+c)).join(', ')+')', ev.resultT!=='pending'?ev.resultT:'');
-  if(tVal===null) return;
-  const g1Val = prompt(t('resultGrade1Label')+' ('+G1_OPTS.map(c=>t('g1_'+c)).join(', ')+', -)', '');
-  const g2Val = prompt(t('resultGrade2Label')+' ('+G2_OPTS.map(c=>t('g2_'+c)).join(', ')+', -)', '');
-  const matchCode = (val, opts, prefix)=>{ const found = opts.find(c=> t(prefix+c).toLowerCase()===String(val).trim().toLowerCase() || c===String(val).trim().toLowerCase()); return found||''; };
-  if(tVal) ev.resultT = matchCode(tVal, T_STAGES_RESULT, 't_') || ev.resultT;
-  if(g1Val) ev.resultG1 = matchCode(g1Val, G1_OPTS, 'g1_');
-  if(g2Val) ev.resultG2 = matchCode(g2Val, G2_OPTS, 'g2_');
-  if(ev.paris==='pending'){
-    const parisVal = prompt(t('parisLabel')+' ('+['nondiagnostic','negative','atypical','suspicious','hguc','other'].map(c=>t('paris_'+c)).join(', ')+')','');
-    if(parisVal){ const found = ['nondiagnostic','negative','atypical','suspicious','hguc','other'].find(c=> t('paris_'+c).toLowerCase()===parisVal.trim().toLowerCase()); if(found) ev.paris = found; }
+// Opens a small form in the details sheet with drop-downs for every result field of this
+// entry (pre-filled). An entry stays "pending" only while some field is still set to pending.
+function eventResultFields(ev){
+  const f = [];
+  const hasBiopsy = (ev.type==='surgery' && (ev.surgType==='turb'||ev.surgType==='cystoscopy_biopsy'))
+    || (ev.type==='office_cystoscopy' && ev.recurrence==='yes' && ev.recAction==='biopsy')
+    || ['resultT','resultG1','resultG2'].some(k=>ev[k]==='pending');
+  if(hasBiopsy){
+    f.push({key:'resultT', label:t('resultTStageLabel'), opts:T_STAGES_RESULT, prefix:'t_', allowEmpty:false});
+    f.push({key:'resultG1', label:t('resultGrade1Label'), opts:G1_OPTS, prefix:'g1_', allowEmpty:true});
+    f.push({key:'resultG2', label:t('resultGrade2Label'), opts:G2_OPTS, prefix:'g2_', allowEmpty:true});
   }
-  ev.pending = (ev.resultT==='pending' || ev.resultG1==='pending' || ev.resultG2==='pending' || ev.paris==='pending');
-  saveData(); renderHistory(); renderPendingBanner();
+  if(ev.cytology==='yes' || ev.paris==='pending'){
+    f.push({key:'paris', label:t('parisLabel'), opts:['nondiagnostic','negative','atypical','suspicious','hguc','other'], prefix:'paris_', allowEmpty:false});
+  }
+  return f;
+}
+function completeEvent(id){
+  const ev = data.events.find(e=>String(e.id)===String(id));
+  if(!ev) return;
+  const fields = eventResultFields(ev);
+  document.getElementById('detailModalTitle').textContent = t('completeButton');
+  document.getElementById('detailModalBody').innerHTML =
+    `<div class="statRow"><span>${t('tag_'+ev.type)}</span><b>${fmtDate(ev.date)}</b></div>` +
+    fields.map(fd=>`<div class="row" style="margin-top:8px"><div class="field"><label>${fd.label}</label><select id="cf_${fd.key}"></select></div></div>`).join('');
+  fields.forEach(fd=>{
+    const el = document.getElementById('cf_'+fd.key);
+    el.innerHTML = (fd.allowEmpty?`<option value="">${t('notApplicable')}</option>`:'')
+      + fd.opts.map(c=>`<option value="${c}">${t(fd.prefix+c)}</option>`).join('')
+      + `<option value="pending">${t('pending')}</option>`;
+    el.value = ev[fd.key]!=null && ev[fd.key]!=='' ? ev[fd.key] : (fd.allowEmpty ? '' : 'pending');
+  });
+  document.getElementById('detailModalActions').innerHTML =
+    `<button class="btn-primary" style="flex:1" onclick="saveCompletedResult(${ev.id})">${t('saveButton')}</button>`;
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+function saveCompletedResult(id){
+  const ev = data.events.find(e=>String(e.id)===String(id));
+  if(!ev) return;
+  eventResultFields(ev).forEach(fd=>{ ev[fd.key] = document.getElementById('cf_'+fd.key).value; });
+  ev.pending = ['resultT','resultG1','resultG2','paris'].some(k=> ev[k]==='pending');
+  saveData();
+  closeEventDetail();
+  renderHistory(); renderStatus(); renderPendingBanner();
 }
 
 /* pending banner */
