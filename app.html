@@ -782,7 +782,7 @@ viewTable:"Tabela", viewTimeline:"Oś czasu",
 colEvent:"Wydarzenie", colDate:"Data", colDetails:"Szczegóły", colNotes:"Notatki", colActions:"Akcje",
 deleteButton:"Usuń", confirmDelete:"Usunąć ten wpis?", completeButton:"Uzupełnij wynik", saveButton:"Zapisz", cancelButton:"Anuluj", detailsButton:"Szczegóły", detailsTitle:"Szczegóły wydarzenia", closeButton:"Zamknij",
 pendingBadge:"Wynik oczekujący",
-pendingBannerText:n=>`${n} ${n===1?'wpis wymaga':'wpisy/wpisów wymagają'} uzupełnienia wyniku — dotknij tutaj.`,
+pendingBannerText:n=>`${n} ${n===1?'wpis wymaga':((n%10>=2&&n%10<=4&&!(n%100>=12&&n%100<=14))?'wpisy wymagają':'wpisów wymaga')} uzupełnienia wyniku — dotknij tutaj.`,
 statusTitle:"Aktualny status",
 st_diagDate:"Data pierwszego rozpoznania", st_risk:"Grupa ryzyka", st_recurrences:"Liczba wznów",
 st_lastRecurrence:"Data ostatniej wznowy", st_instillations:"Zrealizowane serie wlewek",
@@ -835,7 +835,8 @@ function detectLang(){
   return 'en';
 }
 let currentLang = detectLang();
-function t(key){ return (I18N[currentLang] && I18N[currentLang][key]!==undefined) ? I18N[currentLang][key] : (I18N.en[key]!==undefined ? I18N.en[key] : key); }
+function escHTML(v){ return String(v==null?'':v).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function t(key){ return (I18N[currentLang] && I18N[currentLang][key]!==undefined) ? I18N[currentLang][key] : (I18N.en[key]!==undefined ? I18N.en[key] : escHTML(key)); }
 
 function setLang(lang){
   currentLang = lang;
@@ -1236,6 +1237,7 @@ function onRecurrenceChange(){
 function onRecActionChange(){
   const wrap = document.getElementById('ev_biopsyResultWrap');
   const isBiopsy = document.getElementById('ev_recurrence').value==='yes' && document.getElementById('ev_recAction').value==='biopsy';
+  wrap.classList.toggle('hidden', !isBiopsy);
   if(isBiopsy){
     wrap.innerHTML = resultFieldsHTML('ev_biores');
     fillSelect('ev_bioresT', T_STAGES_RESULT.concat(['pending']), 't_');
@@ -1366,7 +1368,7 @@ function eventSummary(ev){
   const lines = [];
   if(ev.type==='urine_test'){
     if(ev.urineResult) lines.push(t('urineRes_'+ev.urineResult));
-    if(ev.kind) lines.push(ev.kind);
+    if(ev.kind) lines.push(escHTML(ev.kind));
   } else if(ev.type==='office_cystoscopy'){
     lines.push(t('recurrenceLabel')+' '+(ev.recurrence==='yes'?t('yes'):t('no')));
   } else if(ev.type==='instillation'){
@@ -1395,7 +1397,7 @@ function eventDetailHTML(ev){
   add(t('eventTypeLabel'), t('tag_'+ev.type));
   add(t('eventDateLabel'), fmtDate(ev.date));
   if(ev.type==='urine_test'){
-    add(t('urineKindLabel'), ev.kind);
+    add(t('urineKindLabel'), ev.kind ? escHTML(ev.kind) : '');
     add(t('urineResultLabel'), ev.urineResult ? t('urineRes_'+ev.urineResult) : '');
   } else if(ev.type==='office_cystoscopy'){
     add(t('recurrenceLabel'), ev.recurrence==='yes'?t('yes'):t('no'));
@@ -1435,7 +1437,7 @@ function eventDetailHTML(ev){
       add(t('resultTStageLabel')+'/'+t('resultGrade1Label')+'/'+t('resultGrade2Label'), r || (ev.pending?t('pendingBadge'):''));
     }
   }
-  if(ev.notes) rows.push(`<div class="statRow" style="flex-direction:column;align-items:flex-start;"><span>${t('notesLabel')}</span><b style="white-space:pre-wrap;text-align:left;margin-top:4px;">${ev.notes.replace(/</g,'&lt;')}</b></div>`);
+  if(ev.notes) rows.push(`<div class="statRow" style="flex-direction:column;align-items:flex-start;"><span>${t('notesLabel')}</span><b style="white-space:pre-wrap;text-align:left;margin-top:4px;">${escHTML(ev.notes)}</b></div>`);
   return rows.join('');
 }
 function profileDetailHTML(){
@@ -1464,13 +1466,13 @@ function profileDetailHTML(){
   } else if(p.location==='renal_pelvis'||p.location==='ureter'){
     add(t('sideLabel'), p.side?t('side_'+p.side):'');
     add(t('neoadjLabel'), p.neoadj?t(p.neoadj==='yes'?'yes':'no'):'');
-    if(p.neoadj==='yes') add(t('neoadjTypeLabel'), p.neoadjType);
+    if(p.neoadj==='yes') add(t('neoadjTypeLabel'), p.neoadjType ? escHTML(p.neoadjType) : '');
     add(t('lnLabel'), p.ln?t(p.ln==='yes'?'yes':'no'):'');
     if(p.ln==='yes') add(t('nStageLabel'), p.nStage?t('n_'+p.nStage):'');
     add(t('adjLabel'), p.adj?t(p.adj==='yes'?'yes':'no'):'');
-    if(p.adj==='yes') add(t('adjTypeLabel'), p.adjType);
+    if(p.adj==='yes') add(t('adjTypeLabel'), p.adjType ? escHTML(p.adjType) : '');
   }
-  if(p.notes) rows.push(`<div class="statRow" style="flex-direction:column;align-items:flex-start;"><span>${t('notesLabel')}</span><b style="white-space:pre-wrap;text-align:left;margin-top:4px;">${p.notes.replace(/</g,'&lt;')}</b></div>`);
+  if(p.notes) rows.push(`<div class="statRow" style="flex-direction:column;align-items:flex-start;"><span>${t('notesLabel')}</span><b style="white-space:pre-wrap;text-align:left;margin-top:4px;">${escHTML(p.notes)}</b></div>`);
   return rows.join('') || `<p class="empty">${t('st_noProfile')}</p>`;
 }
 function showTlTooltip(evt, key){
@@ -1575,7 +1577,7 @@ function renderTable(){
       <td><span class="tag tag-${e.type}">${t('tag_'+e.type)}</span>${recBadge}${pendBadge}</td>
       <td class="colDate">${fmtDate(e.date)}</td>
       <td>${summary}</td>
-      <td class="colNotes">${e.notes ? e.notes.replace(/</g,'&lt;') : '—'}</td>
+      <td class="colNotes">${e.notes ? escHTML(e.notes) : '—'}</td>
       <td class="colActions no-print">
         <button class="btn-ghost" onclick="openEventDetail(${e.id})">${t('detailsButton')}</button>
         ${e.pending?`<button class="btn-ghost" onclick="completeEvent(${e.id})">${t('completeButton')}</button>`:''}
@@ -1604,7 +1606,7 @@ function renderTimeline(){
   // gap don't force endless scrolling — long gaps are visually "broken" instead.
   const PX_PER_DAY = 3;      // spacing for gaps up to the cap
   const CAP_DAYS = 45;       // gaps longer than this stop adding extra width
-  const MIN_STEP = 46;       // minimum px between two distinct dates (label width)
+  const MIN_STEP = 66;       // minimum px between two distinct dates (date label width)
   const LEFT_PAD = 30, RIGHT_PAD = 40;
 
   const uniqueMs = [...new Set(allDates)].sort((a,b)=>a-b);
@@ -1830,7 +1832,7 @@ function renderAttachments(){
       <img src="${a.dataUrl}">
       <div class="thumbMeta">
         ${fmtDate(a.date)}${linkedEv?` · ${t('tag_'+linkedEv.type)}`:''}
-        ${a.note?`<br>${a.note.replace(/</g,'&lt;')}`:''}
+        ${a.note?`<br>${escHTML(a.note)}`:''}
         <br><button class="btn-danger no-print" style="padding:2px 4px;margin-top:4px" onclick="deleteAttachment(${a.id})">${t('attachDelete')}</button>
       </div>
     </div>`;
@@ -1854,8 +1856,15 @@ function importData(event){
       const imported = JSON.parse(e.target.result);
       if(!imported.events) throw new Error('bad format');
       if(!confirm(t('importConfirm'))) return;
-      data = {profile: imported.profile||{}, events: imported.events||[]};
-      attachments = imported.attachments||[];
+      const okDate = d=> typeof d==='string' && /^\d{4}-\d{2}-\d{2}$/.test(d);
+      const events = (Array.isArray(imported.events)?imported.events:[]).filter(e=> e && EVENT_TYPES.includes(e.type) && okDate(e.date))
+        .map((e,i)=> Object.assign({}, e, {id: Number.isFinite(Number(e.id)) ? Number(e.id) : Date.now()+i}));
+      const profile = (imported.profile && typeof imported.profile==='object') ? imported.profile : {};
+      if(profile.diagDate && !okDate(profile.diagDate)) delete profile.diagDate;
+      data = {profile, events};
+      attachments = (Array.isArray(imported.attachments)?imported.attachments:[])
+        .filter(a=> a && typeof a.dataUrl==='string' && /^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(a.dataUrl))
+        .map((a,i)=> Object.assign({}, a, {id: Number.isFinite(Number(a.id)) ? Number(a.id) : Date.now()+i}));
       saveData(); saveAttachments();
       fullRender();
       alert(t('importSuccess'));
